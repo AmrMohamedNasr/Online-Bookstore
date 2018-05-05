@@ -10,9 +10,75 @@
 <link rel="stylesheet" type="text/css" href="css/tabs.css" />
 <script type="text/javascript" src="js/tabs.js" ></script>
 <script type="text/javascript" src="js/jquery-3.3.1.min.js" ></script>
+<script type="text/javascript" src="js/jquery.dynatable.js" ></script>
+<link rel="stylesheet" media="all" href="https://s3.amazonaws.com/dynatable-docs-assets/css/jquery.dynatable.css" />
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript">
+	function add_to_cart(isbn) {
+		var url = "${pageContext.request.contextPath}/cart";
+		alert("add to cart : " + isbn);
+		$.ajax({
+	           type: "POST",
+	           url: url,
+	           data: {"isbn" : isbn}, // serializes the form's elements.
+	           success: function(data)
+	           {
+	        	   if (data.code == 200) {
+		               if (("Notification" in window)) {
+	              			if (Notification.permission === "granted") {
+	              		    	// If it's okay let's create a notification
+	              		   	 var notification = new Notification("Added To Cart...");
+	              		  	}
+	              		  	// Otherwise, we need to ask the user for permission
+	              		  	else if (Notification.permission !== "denied") {
+	              		    	Notification.requestPermission(function (permission) {
+	              		      	// If the user accepts, let's create a notification
+              		     	 		if (permission === "granted") {
+              		        			var notification = new Notification("Added To Cart...");
+              		      			}
+              		   	 		});
+            	  			}
+	              		}
+	        	   } else {
+	        		   if (("Notification" in window)) {
+		              		if (Notification.permission === "granted") {
+		              		    // If it's okay let's create a notification
+		              		    var notification = new Notification("Couldn't add to cart...");
+		              		  }
+		              		  // Otherwise, we need to ask the user for permission
+		              		  else if (Notification.permission !== "denied") {
+		              		    Notification.requestPermission(function (permission) {
+			              		      // If the user accepts, let's create a notification
+		              		     	 if (permission === "granted") {
+		              		        	var notification = new Notification("Couldn't add to cart...");
+		              		      	}
+	              		   	 	});
+		              		 }
+	        	   		}
+	        	   }
+	           },
+	           error:function(result)
+            {
+	        	   if (("Notification" in window)) {
+	              		if (Notification.permission === "granted") {
+	              		    // If it's okay let's create a notification
+	              		    var notification = new Notification("Couldn't add to cart...");
+	              		  }
+	              		  // Otherwise, we need to ask the user for permission
+	              		  else if (Notification.permission !== "denied") {
+	              		    Notification.requestPermission(function (permission) {
+		              		      // If the user accepts, let's create a notification
+	              		     	 if (permission === "granted") {
+	              		        	var notification = new Notification("Couldn't add to cart...");
+	              		      	}
+             		   	 	});
+	              		 }
+       	   		}
+           	}
+	         });
+	};
+	
 	$(function() {
 		$("#profileForm").submit(function(e) {
 	
@@ -71,6 +137,7 @@
 		});
 		
 		$( "#datepicker" ).datepicker();
+		$('#my-final-table').dynatable();
 		
 		$("#bookSearchForm").submit(function(e) {
 			
@@ -83,15 +150,28 @@
 		           dataType: "json",
 		           success: function(data)
 		           {
-		        	   console.log(data);
 		        	   
-		        	   //if (data.code == 200) {
-			           //    $("#searchResult").text(data.message);
-			            //   $("#searchResult").css('color', 'green');
-		        	   //} else {
-		        		 //  $("#searchResult").text(data.message);
-			               //$("#searchResult").css('color', 'red');
-		        	   //}
+		        	   if (data.code == 200) {
+		        		   
+			               $("#searchResult").text("");
+			           	   $("#searchResult").css('color', 'green');
+				            var myRecords = data.values;
+				            var i = 0;
+				            for (i = 0; i < myRecords.length; i++) {
+				            	myRecords[i].addToCart = "<button onclick='add_to_cart("+myRecords[i].isbn +")' >Add to Cart</button>";
+				            }
+				            var dynatable = $('#my-final-table').dynatable({
+			                    dataset: {
+			                        records: myRecords
+			                    }
+			                }).data('dynatable');
+				            dynatable.settings.dataset.originalRecords = myRecords;
+			                dynatable.process();
+			                
+		        	   } else {
+		        		  	$("#searchResult").text(data.message);
+		            		$("#searchResult").css('color', 'red');
+		        	   }
 		           },
 		           error:function(result)
 	               {
@@ -158,6 +238,21 @@
             </tr>
          </table>
       </form>
+      <table id="my-final-table">
+		  <thead>
+		  <tr>
+		    <th>ISBN</th>
+		    <th>Title</th>
+		    <th>Category</th>
+		    <th>Publication Date</th>
+		    <th>Price</th>
+		    <th>Publisher</th>
+		    <th>Add To Cart</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		  </tbody>
+	</table>
        <p id="searchResult"></p>
 	</div>
 	

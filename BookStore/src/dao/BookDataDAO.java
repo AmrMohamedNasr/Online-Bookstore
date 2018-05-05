@@ -18,7 +18,7 @@ public class BookDataDAO {
 	static final String[] attributes = {"ISBN", "Title", "PublicationDate", "Threshold", "Price", "CopiesNumber",
 			"cid", "pid"};
 	
-	public static List<Book> selectBookQuery(Book book, List<Author> authors, List<Category> cids, List<Publisher> pids) {
+	public static List<Book> selectBookQuery(Book book, List<List<Author>> authors, List<Category> cids, List<Publisher> pids) {
 		try {
 			Connection connect = ConnectionProvider.getCon();
 			boolean sauthor = authors != null && !authors.isEmpty();
@@ -94,6 +94,7 @@ public class BookDataDAO {
 					sb.append((int)cids.get(i).getCid());
 				}
 				sb.append(")");
+				prev_cond = true;
 			}
 			if (spublisher) {
 				if (prev_cond) {
@@ -108,21 +109,38 @@ public class BookDataDAO {
 					sb.append((int)pids.get(i).getPid());
 				}
 				sb.append(")");
+				prev_cond = true;
 			}
 			if (sauthor) {
 				if (prev_cond) {
 					sb.append(" and ");
 				}
+				sb.append(" isbn in ");
 				sb.append("(");
-				for (int i = 0; i < authors.size(); i++) {
-					if (i != 0) {
-						sb.append(" or ");
+				sb.append("Select Distinct ISBN From (");
+				boolean prev_in_cond = false;
+				for (int j = 0; j < authors.size(); j++) {
+					if (!authors.get(j).isEmpty()) {
+						if (prev_in_cond) {
+							sb.append(" natural join ");
+						}
+						sb.append("( select Distinct ISBN from (AuthoredBy natural join Author) where ");
+						for (int i = 0; i < authors.get(j).size(); i++) {
+							if (i != 0) {
+								sb.append(" or ");
+							}
+							sb.append("name like \'%");
+							sb.append(authors.get(j).get(i).getName());
+							sb.append("%\'");
+						}
+						sb.append(") as a");
+						sb.append(j);
+						prev_in_cond = true;
 					}
-					sb.append("name like \'%");
-					sb.append(authors.get(i).getName());
-					sb.append("%\'");
 				}
 				sb.append(")");
+				sb.append(")");
+				prev_cond = true;
 			}
 			if (!sb.toString().equals(" where ")) {
 				sb2.append(sb);

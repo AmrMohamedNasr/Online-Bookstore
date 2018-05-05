@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,6 +19,7 @@ import bean.Author;
 import bean.Book;
 import bean.Category;
 import bean.Publisher;
+import dao.AuthorDataDAO;
 import dao.BookDataDAO;
 import dao.CategoryDataDAO;
 import dao.PublisherDataDAO;
@@ -42,7 +44,7 @@ public class BookServlet extends HttpServlet {
     	int code = 200;
     	String message = "";
     	Integer iIsbn, iPrice;
-    	List<Author> authors = null;
+    	List<List<Author>> authors = null;
     	List<Publisher> pubs = null;
     	List<Category> categories = null;
     	Date date;
@@ -109,20 +111,24 @@ public class BookServlet extends HttpServlet {
     	if (author.trim().isEmpty()) {
     		authors = null;
     	} else {
-    		authors = null;
-    		System.out.println(author);
+    		authors = new ArrayList<List<Author>> ();
+    		String[] authorNames = author.split("\\r?\\n");
+    		for (int i = 0; i < authorNames.length; i++) {
+    			Author aut = new Author(null, authorNames[i]);
+    			authors.add(AuthorDataDAO.searchAuthor(aut));
+    		}
     	}
     	Book searchBook = new Book(iIsbn, title, date, null, iPrice, null, null, null);
     	List<Book> books = BookDataDAO.selectBookQuery(searchBook, authors, categories, pubs);
     	JSONArray array = new JSONArray();
     	for (int i = 0;books != null && i < books.size(); i++) {
     		JSONObject obj = new JSONObject();
-    		obj.put("ISBN", books.get(i).getIsbn());
-    		obj.put("Title", books.get(i).getTitle());
-    		obj.put("Publication Date", books.get(i).getPublicationDate().toString());
-    		obj.put("Price", books.get(i).getPrice());
-    		obj.put("Category", CategoryDataDAO.getCategoryName(books.get(i).getCid()));
-    		obj.put("Publisher", PublisherDataDAO.getPublisherName(books.get(i).getPid()));
+    		obj.put("isbn", books.get(i).getIsbn());
+    		obj.put("title", books.get(i).getTitle());
+    		obj.put("publicationDate", books.get(i).getPublicationDate().toString());
+    		obj.put("price", books.get(i).getPrice());
+    		obj.put("category", CategoryDataDAO.getCategoryName(books.get(i).getCid()));
+    		obj.put("publisher", PublisherDataDAO.getPublisherName(books.get(i).getPid()));
     		array.add(obj);
     	}
     	code = 200;
