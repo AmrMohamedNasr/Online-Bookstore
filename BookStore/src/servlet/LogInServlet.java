@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import bean.User;
+import dao.UserDataDAO;
 import utils.AppUtils;
-import utils.UserDataDAO;
 
 @WebServlet("/login")
 public class LogInServlet extends HttpServlet {

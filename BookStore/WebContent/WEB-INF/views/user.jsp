@@ -10,6 +10,8 @@
 <link rel="stylesheet" type="text/css" href="css/tabs.css" />
 <script type="text/javascript" src="js/tabs.js" ></script>
 <script type="text/javascript" src="js/jquery-3.3.1.min.js" ></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript">
 	$(function() {
 		$("#profileForm").submit(function(e) {
@@ -67,6 +69,41 @@
 		
 		    e.preventDefault(); // avoid to execute the actual submit of the form.
 		});
+		
+		$( "#datepicker" ).datepicker();
+		
+		$("#bookSearchForm").submit(function(e) {
+			
+		    var url = "${pageContext.request.contextPath}/book"; // the script where you handle the form input.
+		
+		    $.ajax({
+		           type: "GET",
+		           url: url,
+		           data: $("#bookSearchForm").serialize(), // serializes the form's elements.
+		           dataType: "json",
+		           success: function(data)
+		           {
+		        	   console.log(data);
+		        	   
+		        	   //if (data.code == 200) {
+			           //    $("#searchResult").text(data.message);
+			            //   $("#searchResult").css('color', 'green');
+		        	   //} else {
+		        		 //  $("#searchResult").text(data.message);
+			               //$("#searchResult").css('color', 'red');
+		        	   //}
+		           },
+		           error:function(result)
+	               {
+		        	   alert("ERROR");
+		        	   console.log(result.responseText);
+		        	   $("#searchResult").text(result.message);
+		               $("#searchResult").css('color', 'red');
+	              	}
+		         });
+		
+		    e.preventDefault(); // avoid to execute the actual submit of the form.
+		});
 	});
 </script>
 </head>
@@ -84,7 +121,44 @@
 	<!-- Tab content -->
 	<div id="Search" class="tabcontent" style='display:block'>
 	  <h3>Search For Books</h3>
-	  <p>London is the capital city of England.</p>
+	  <form method="POST" id = "bookSearchForm">
+         <table border="0">
+         	<tr>
+               <td>ISBN</td>
+               <td><input type="text" name="isbn" value= "" /> </td>
+            </tr>
+            <tr>
+               <td>Title</td>
+               <td><input type="text" name="title" value= "" /> </td>
+            </tr>
+            <tr>
+               <td>Publication Date</td>
+               <td><input type="text" id="datepicker" name="date" value= "" /> </td>
+            </tr>
+            <tr>
+               <td>Price</td>
+               <td><input type="text" name="price" value= "" /> </td>
+            </tr>
+            <tr>
+               <td>Category</td>
+               <td><input type="text" name="category" value= "" /> </td>
+            </tr>
+            <tr>
+               <td>Publisher</td>
+               <td><input type="text" name="publisher" value= "" /> </td>
+            </tr>
+            <tr>
+               <td>Authors</td>
+               <td><textarea rows="4" cols="50" name="authors" form="bookSearchForm"></textarea> </td>
+            </tr>
+            <tr>
+               <td colspan ="2">
+                  <input type="submit" value= "Search" />
+               </td>
+            </tr>
+         </table>
+      </form>
+       <p id="searchResult"></p>
 	</div>
 	
 	<div id="Cart" class="tabcontent">

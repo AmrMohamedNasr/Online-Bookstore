@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import bean.User;
+import dao.UserDataDAO;
 import utils.AppUtils;
-import utils.UserDataDAO;
 
 @WebServlet("/editUser")
 public class EditUserServlet extends HttpServlet {

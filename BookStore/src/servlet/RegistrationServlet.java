@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import bean.User;
-import utils.UserDataDAO;
+import dao.UserDataDAO;
 
 @WebServlet("/register")
 public class RegistrationServlet extends HttpServlet {

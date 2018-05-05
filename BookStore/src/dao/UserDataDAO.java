@@ -1,4 +1,4 @@
-package utils;
+package dao;
 
 import java.security.MessageDigest;
 import java.sql.Connection;
