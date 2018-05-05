@@ -3,7 +3,6 @@ package servlet;
 import java.io.IOException;
 import org.apache.commons.validator.routines.EmailValidator;
 
-import com.sun.xml.internal.ws.api.message.AddressingUtils;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -14,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import bean.User;
-import utils.DataDAO;
+import utils.UserDataDAO;
 
 @WebServlet("/register")
 public class RegistrationServlet extends HttpServlet {
@@ -94,7 +93,7 @@ public class RegistrationServlet extends HttpServlet {
             return;
         }
         User userAccount = new User(userName, password, email, 0, false, firstName, lastName, phone, address);
-        String error = DataDAO.addUser(userAccount);
+        String error = UserDataDAO.addUser(userAccount);
         if (error != null) {
             String errorMessage = error;
  

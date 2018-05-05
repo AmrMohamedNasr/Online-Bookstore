@@ -34,15 +34,14 @@ public class SecurityFilter implements Filter {
 	        HttpServletResponse response = (HttpServletResponse) resp;
 	 
 	        String servletPath = request.getServletPath();
-	 
 	        // User information stored in the Session.
 	        // (After successful login).
 	        User loginedUser = AppUtils.getLoginedUser(request.getSession());
 	        HttpServletRequest wrapRequest = request;
-	        if (servletPath.equals("/login") && loginedUser == null) {
+	        if ((servletPath.equals("/login") || servletPath.equals("/register"))&& loginedUser == null) {
 	            chain.doFilter(request, response);
 	            return;
-	        } else if (servletPath.equals("/login")) {
+	        } else if (servletPath.equals("/login") || servletPath.equals("/register")) {
 	        	wrapRequest = new UserRoleRequestWrapper(loginedUser, request);
 	        	response.sendRedirect(wrapRequest.getContextPath() + "/user");
                 return;
@@ -81,7 +80,6 @@ public class SecurityFilter implements Filter {
 	                return;
 	            }
 	        }
-	 
 	        chain.doFilter(wrapRequest, response);
 	    }
 	 

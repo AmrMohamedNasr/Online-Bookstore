@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import bean.User;
 import utils.AppUtils;
-import utils.DataDAO;
+import utils.UserDataDAO;
 
 @WebServlet("/login")
 public class LogInServlet extends HttpServlet {
@@ -36,7 +36,7 @@ public class LogInServlet extends HttpServlet {
             throws ServletException, IOException {
     	String userName = request.getParameter("userName");
         String password = request.getParameter("password");
-        User userAccount = DataDAO.findUser(userName, password);
+        User userAccount = UserDataDAO.findUser(userName, password);
         if (userAccount == null) {
             String errorMessage = "Invalid userName or Password";
  
