@@ -17,7 +17,28 @@ public class BookDataDAO {
 	
 	static final String[] attributes = {"ISBN", "Title", "PublicationDate", "Threshold", "Price", "CopiesNumber",
 			"cid", "pid"};
-	
+	public static Book findBook(Integer isbn) {
+		   try{  
+			   Connection con= ConnectionProvider.getCon();     
+			   PreparedStatement ps=con.prepareStatement(  
+			       "select * from Book where isbn=?");  
+			   
+			   ps.setInt(1, isbn);  
+			   ResultSet rs=ps.executeQuery(); 
+			   
+			   if(rs.next()) {
+				   Book u = new Book(rs);
+				   return u;
+			   } else {
+				   return null;
+			   }
+			                 
+		   }catch(Exception e){
+			   e.printStackTrace();
+		   }  
+	      
+	      return null;
+   }
 	public static List<Book> selectBookQuery(Book book, List<List<Author>> authors, List<Category> cids, List<Publisher> pids) {
 		try {
 			Connection connect = ConnectionProvider.getCon();

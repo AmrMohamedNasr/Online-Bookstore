@@ -48,7 +48,7 @@ public class BookServlet extends HttpServlet {
     	List<Publisher> pubs = null;
     	List<Category> categories = null;
     	Date date;
-    	if (isbn.trim().isEmpty()) {
+    	if (isbn == null || isbn.trim().isEmpty()) {
     		iIsbn = null;
     	} else {
     		if (!isInteger(isbn)) {
@@ -64,10 +64,10 @@ public class BookServlet extends HttpServlet {
     			iIsbn = Integer.parseInt(isbn);
     		}
     	}
-    	if (title.trim().isEmpty()) {
+    	if (title == null || title.trim().isEmpty()) {
     		title = null;
     	}
-    	if (publicationDate.trim().isEmpty()) {
+    	if (publicationDate == null || publicationDate.trim().isEmpty()) {
     		date = null;
     	} else {
     		java.util.Date utilDate;
@@ -80,7 +80,7 @@ public class BookServlet extends HttpServlet {
 				date = null;
 			}	
     	}
-    	if (price.trim().isEmpty()) {
+    	if (price == null || price.trim().isEmpty()) {
     		iPrice = null;
     	} else {
     		if (!isInteger(price)) {
@@ -96,19 +96,19 @@ public class BookServlet extends HttpServlet {
     			iPrice = Integer.parseInt(price);
     		}
     	}
-    	if (category.trim().isEmpty()) {
+    	if (category == null || category.trim().isEmpty()) {
     		categories = null;
     	} else {
     		Category cat = new Category(null, category);
     		categories = CategoryDataDAO.searchCategory(cat);
     	}
-    	if (publisher.trim().isEmpty()) {
+    	if (publisher == null || publisher.trim().isEmpty()) {
     		pubs = null;
     	} else {
     		Publisher pub = new Publisher(null, publisher, null, null);
     		pubs = PublisherDataDAO.searchPublisher(pub);
     	}
-    	if (author.trim().isEmpty()) {
+    	if (author == null || author.trim().isEmpty()) {
     		authors = null;
     	} else {
     		authors = new ArrayList<List<Author>> ();

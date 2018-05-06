@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import bean.Cart;
 import bean.User;
 
 public class AppUtils {
@@ -24,7 +25,19 @@ public class AppUtils {
         User loginedUser = (User) session.getAttribute("loginedUser");
         return loginedUser;
     }
+    
+ // Store user info in Session.
+    public static void storeCart(HttpSession session, Cart cart) {
+        // On the JSP can access via ${loginedUser}
+        session.setAttribute("cart", cart);
+    }
  
+    // Get the user information stored in the session.
+    public static Cart getCart(HttpSession session) {
+        Cart cart = (Cart) session.getAttribute("cart");
+        return cart;
+    }
+    
     public static int storeRedirectAfterLoginUrl(HttpSession session, String requestUri) {
         Integer id = uri_id_map.get(requestUri);
  

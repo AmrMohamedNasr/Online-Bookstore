@@ -15,10 +15,16 @@
 		</a>
     </c:when>
     <c:otherwise>
-    	<a href="${pageContext.request.contextPath}/manager">
-		  Manager
-		</a>
-		||
+    <c:choose>
+    	<c:when test="${loginedUser.manager}">
+	    	<a href="${pageContext.request.contextPath}/manager">
+			  Manager
+			</a>
+			||
+		</c:when>
+		<c:otherwise>
+		</c:otherwise>
+		</c:choose>
 		<a href="${pageContext.request.contextPath}/user">
 		  User
 		</a>       

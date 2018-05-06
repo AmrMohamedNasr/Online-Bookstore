@@ -14,18 +14,132 @@
 <link rel="stylesheet" media="all" href="https://s3.amazonaws.com/dynatable-docs-assets/css/jquery.dynatable.css" />
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script src="js/jquery.creditCardValidator.js"></script>
+  
 <script type="text/javascript">
+	function clear_cart() {
+		var url = "${pageContext.request.contextPath}/cart"; // the script where you handle the form input.
+		
+	    $.ajax({
+	           type: "DELETE",
+	           url: url,
+	           success: function(data)
+	           {
+	        	   
+	        	   if (data.code == 200) {
+	        		    
+                       update_cart_table();
+                       if (("Notification" in window)) {
+	              			if (Notification.permission === "granted") {
+	              		    	// If it's okay let's create a notification
+	              		   	 var notification = new Notification("Cleared Cart...");
+	              		  	}
+	              		  	// Otherwise, we need to ask the user for permission
+	              		  	else if (Notification.permission !== "denied") {
+	              		    	Notification.requestPermission(function (permission) {
+	              		      	// If the user accepts, let's create a notification
+             		     	 		if (permission === "granted") {
+             		        			var notification = new Notification("Cleared Cart...");
+             		      			}
+             		   	 		});
+           	  			}
+	              		}
+	        	   } else {
+	        		   if (("Notification" in window)) {
+	              			if (Notification.permission === "granted") {
+	              		    	// If it's okay let's create a notification
+	              		   	 var notification = new Notification("Couldn't clear Cart...");
+	              		  	}
+	              		  	// Otherwise, we need to ask the user for permission
+	              		  	else if (Notification.permission !== "denied") {
+	              		    	Notification.requestPermission(function (permission) {
+	              		      	// If the user accepts, let's create a notification
+             		     	 		if (permission === "granted") {
+             		        			var notification = new Notification("Couldn't clear Cart...");
+             		      			}
+             		   	 		});
+           	  			}
+	              		}
+	        	   }
+	           },
+	           error:function(result)
+               {
+	        	   alert("ERROR");
+	        	   console.log(result.responseText);
+	        	   if (("Notification" in window)) {
+             			if (Notification.permission === "granted") {
+             		    	// If it's okay let's create a notification
+             		   	 var notification = new Notification("Couldn't clear Cart...");
+             		  	}
+             		  	// Otherwise, we need to ask the user for permission
+             		  	else if (Notification.permission !== "denied") {
+             		    	Notification.requestPermission(function (permission) {
+             		      	// If the user accepts, let's create a notification
+        		     	 		if (permission === "granted") {
+        		        			var notification = new Notification("Couldn't clear Cart...");
+        		      			}
+        		   	 		});
+      	  			}
+             		}
+              	}
+	         });
+	}
+	function update_cart_table() {
+		var url = "${pageContext.request.contextPath}/cart"; // the script where you handle the form input.
+		
+	    $.ajax({
+	           type: "GET",
+	           url: url,
+	           success: function(data)
+	           {
+	        	   
+	        	   if (data.code == 200) {
+	        		    var myRecords = data.values;
+			            if (myRecords.length > 0) {
+			            	$('#cartDiv1').css('display','block');
+			            	$('#cartDiv2').css('display','none');
+			            } else {
+			            	$('#cartDiv1').css('display','none');
+			            	$('#cartDiv2').css('display','block');
+			            }
+			            var i = 0;
+			            for (i = 0; i < myRecords.length; i++) {
+			            	myRecords[i].changeAmount = "<div><input type='text' id='"+myRecords[i].isbn+"' class='enterTextbox' value='"+ myRecords[i].copies+ "'/></div>"
+			            }
+			            var dynatable = $('#cartTable').dynatable({
+		                    dataset: {
+		                        records: myRecords
+		                    }
+		                }).data('dynatable');
+			            dynatable.settings.dataset.originalRecords = myRecords;
+		                dynatable.process();
+		                $( ".enterTextbox" ).keypress(function(e) {
+		                	if (e.which == 13) {
+		                        modify_cart($(this).attr('id'), $(this).val());
+		                        update_cart_table();
+		                    }
+		              	});
+	        	   }
+	           },
+	           error:function(result)
+               {
+	        	   alert("ERROR");
+	        	   console.log(result.responseText);
+              	}
+	         });
+	    
+	}
 	function add_to_cart(isbn) {
 		var url = "${pageContext.request.contextPath}/cart";
-		alert("add to cart : " + isbn);
+		var data = {isbn : isbn};
 		$.ajax({
 	           type: "POST",
 	           url: url,
-	           data: {"isbn" : isbn}, // serializes the form's elements.
+	           data: data, // serializes the form's elements.
 	           success: function(data)
 	           {
 	        	   if (data.code == 200) {
-		               if (("Notification" in window)) {
+	        		   if (("Notification" in window)) {
 	              			if (Notification.permission === "granted") {
 	              		    	// If it's okay let's create a notification
 	              		   	 var notification = new Notification("Added To Cart...");
@@ -71,6 +185,71 @@
 		              		      // If the user accepts, let's create a notification
 	              		     	 if (permission === "granted") {
 	              		        	var notification = new Notification("Couldn't add to cart...");
+	              		      	}
+             		   	 	});
+	              		 }
+       	   		}
+           	}
+	         });
+	};
+	
+	function modify_cart(isbn, amount) {
+		var url = "${pageContext.request.contextPath}/cart";
+		var data = {isbn : isbn,
+				amount:amount};
+		$.ajax({
+	           type: "POST",
+	           url: url,
+	           data: data, // serializes the form's elements.
+	           success: function(data)
+	           {
+	        	   if (data.code == 200) {
+	        		   if (("Notification" in window)) {
+	              			if (Notification.permission === "granted") {
+	              		    	// If it's okay let's create a notification
+	              		   	 var notification = new Notification("Modified in Cart...");
+	              		  	}
+	              		  	// Otherwise, we need to ask the user for permission
+	              		  	else if (Notification.permission !== "denied") {
+	              		    	Notification.requestPermission(function (permission) {
+	              		      	// If the user accepts, let's create a notification
+              		     	 		if (permission === "granted") {
+              		        			var notification = new Notification("Modified in Cart...");
+              		      			}
+              		   	 		});
+            	  			}
+	              		}
+	        	   } else {
+	        		   if (("Notification" in window)) {
+		              		if (Notification.permission === "granted") {
+		              		    // If it's okay let's create a notification
+		              		    var notification = new Notification("Couldn't modify cart...");
+		              		  }
+		              		  // Otherwise, we need to ask the user for permission
+		              		  else if (Notification.permission !== "denied") {
+		              		    Notification.requestPermission(function (permission) {
+			              		      // If the user accepts, let's create a notification
+		              		     	 if (permission === "granted") {
+		              		        	var notification = new Notification("Couldn't modify cart...");
+		              		      	}
+	              		   	 	});
+		              		 }
+	        	   		}
+	        	   }
+	           },
+	           error:function(result)
+            {
+	        	   if (("Notification" in window)) {
+	              		if (Notification.permission === "granted") {
+	              		    // If it's okay let's create a notification
+	              		    var notification = new Notification("Couldn't modify cart...");
+	              		  }
+	              		  // Otherwise, we need to ask the user for permission
+	              		  else if (Notification.permission !== "denied") {
+	              		    Notification.requestPermission(function (permission) {
+		              		      // If the user accepts, let's create a notification
+	              		     	 if (permission === "granted") {
+	              		        	var notification = new Notification("Couldn't modify cart...");
 	              		      	}
              		   	 	});
 	              		 }
@@ -138,6 +317,7 @@
 		
 		$( "#datepicker" ).datepicker();
 		$('#my-final-table').dynatable();
+		$('#cartTable').dynatable();
 		
 		$("#bookSearchForm").submit(function(e) {
 			
@@ -155,7 +335,13 @@
 		        		   
 			               $("#searchResult").text("");
 			           	   $("#searchResult").css('color', 'green');
+			           	   
 				            var myRecords = data.values;
+				            if (myRecords.length > 0) {
+				            	$('#searchDiv').css('display','block');
+				            } else {
+				            	$('#searchDiv').css('display','none');
+				            }
 				            var i = 0;
 				            for (i = 0; i < myRecords.length; i++) {
 				            	myRecords[i].addToCart = "<button onclick='add_to_cart("+myRecords[i].isbn +")' >Add to Cart</button>";
@@ -185,6 +371,17 @@
 		    e.preventDefault(); // avoid to execute the actual submit of the form.
 		});
 	});
+	
+	function toggle_credit_display() {
+	    var x = document.getElementById("creditDiv");
+	    if (x.style.display === "none") {
+	        x.style.display = "block";
+	        $('#showCheckout').text("Hide Checkout");
+	    } else {
+	        x.style.display = "none";
+	        $('#showCheckout').text("Show Checkout");
+	    }
+	}
 </script>
 </head>
 
@@ -193,7 +390,7 @@
      <!-- Tab links -->
 	<div class="tab">
 	  <button class="tablinks active" onclick="openTab(event, 'Search')">Search</button>
-	  <button class="tablinks" onclick="openTab(event, 'Cart')">My Cart</button>
+	  <button class="tablinks" onclick="openTab(event, 'Cart');update_cart_table()">My Cart</button>
 	  <button class="tablinks" onclick="openTab(event, 'EditProfile')">Edit Profile</button>
 	  <button class="tablinks" onclick="openTab(event, 'EditPassword')">Change Password</button>
 	</div>
@@ -238,6 +435,7 @@
             </tr>
          </table>
       </form>
+      <div id="searchDiv" style="display:none">
       <table id="my-final-table">
 		  <thead>
 		  <tr>
@@ -253,12 +451,36 @@
 		  <tbody>
 		  </tbody>
 	</table>
+	</div>
        <p id="searchResult"></p>
 	</div>
 	
 	<div id="Cart" class="tabcontent">
 	  <h3>My Cart</h3>
-	  <p>Paris is the capital of France.</p> 
+		  <div id="cartDiv1" style="display:none">
+		      <table id="cartTable">
+				  <thead>
+				  <tr>
+				    <th>ISBN</th>
+				    <th>Title</th>
+				    <th>Price</th>
+				    <th>Copies</th>
+				    <th>Total Price</th>
+				    <th>Change Amount</th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				  </tbody>
+			</table>
+			<button onClick='clear_cart()'>Clear Cart</button>
+			<button id="showCheckout" onClick='toggle_credit_display()'>Show Checkout</button>
+			<div id="creditDiv" style="display:none">
+					<p>:p</p>
+			</div>
+		</div>
+		<div id="cartDiv2" style="display:block">
+			<p>Cart is empty</p>
+		</div>
 	</div>
 	
 	<div id="EditProfile" class="tabcontent">

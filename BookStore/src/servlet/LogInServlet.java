@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import bean.Cart;
 import bean.User;
 import dao.UserDataDAO;
 import utils.AppUtils;
@@ -50,7 +51,7 @@ public class LogInServlet extends HttpServlet {
         }
  
         AppUtils.storeLoginedUser(request.getSession(), userAccount);
- 
+        AppUtils.storeCart(request.getSession(), new Cart());
         // 
         int redirectId = -1;
         try {

@@ -34,12 +34,18 @@ public class SecurityConfig {
         List<String> urlPatterns1 = new ArrayList<String>();
  
         urlPatterns1.add("/user");
+        urlPatterns1.add("/book");
+        urlPatterns1.add("/cart");
+        urlPatterns1.add("/editUser");
         mapConfig.put(ROLE.USER, urlPatterns1);
  
         // Configure For "MANAGER" Role.
         List<String> urlPatterns2 = new ArrayList<String>();
         urlPatterns2.add("/manager");
         urlPatterns2.add("/user");
+        urlPatterns2.add("/book");
+        urlPatterns2.add("/cart");
+        urlPatterns2.add("/editUser");
         mapConfig.put(ROLE.MANAGER, urlPatterns2);
     }
  
