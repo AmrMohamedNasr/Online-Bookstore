@@ -1,36 +1,42 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
-<a href="${pageContext.request.contextPath}/home">
+<div class ="navbar">
+<ul class = "navbar">
+<li><a href="${pageContext.request.contextPath}/home" id ="homeNav">
   Home
-</a>
-||
+</a></li>
 <c:choose>
 <c:when test="${empty loginedUser}">
-       <a href="${pageContext.request.contextPath}/login">
-  			Login
-		</a>
-		||
-		<a href="${pageContext.request.contextPath}/register">
+       <li><a href="${pageContext.request.contextPath}/login" id = "loginNav">
+       		Login
+		</a></li>
+		<li>
+		<a href="${pageContext.request.contextPath}/register" id = "registerNav">
   			Register
 		</a>
+		</li>
     </c:when>
     <c:otherwise>
     <c:choose>
     	<c:when test="${loginedUser.manager}">
-	    	<a href="${pageContext.request.contextPath}/manager">
+    		<li>
+	    	<a href="${pageContext.request.contextPath}/manager" id = "managerNav">
 			  Manager
 			</a>
-			||
+			</li>
 		</c:when>
 		<c:otherwise>
 		</c:otherwise>
 		</c:choose>
-		<a href="${pageContext.request.contextPath}/user">
+		<li>
+		<a href="${pageContext.request.contextPath}/user" id = "userNav">
 		  User
 		</a>       
-		||
-        <a href="${pageContext.request.contextPath}/logout">
+		</li>
+		<li>
+        <a href="${pageContext.request.contextPath}/logout" id = "logoutNav">
   			Logout
 		</a>
+		</li>
     </c:otherwise>
 </c:choose>
+</ul></div>

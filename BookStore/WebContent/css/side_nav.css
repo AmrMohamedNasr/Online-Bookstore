@@ -1,0 +1,74 @@
+/* Style the tab */
+
+.sidenav h2 {
+    font-size: 21px;
+    padding-left: 16px;
+    padding-bottom: 3px;
+    padding-top: 5px;
+    margin: -4px 0 4px 0;
+    width: 204px;
+}
+
+.sidenav {
+    height: 100%;
+    width: 15%;
+    background-color: #fff;
+    position: fixed!important;
+    z-index: 1;
+    overflow: auto;
+}
+#sidenavinner {
+    position: fixed;
+    top: 0;
+    padding-top: 48px;
+    padding-bottom: 0;
+    height: 100%;
+    width: 15%;
+    background-color: transparent;
+}
+#sidenavinnerinner {
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-top: 20px';
+    color: #000!important;
+    background-color: #f1f1f1!important;
+}
+
+.sidenav a {
+    padding: 2px 1px 1px 16px;
+    text-decoration: none;
+    color: #000000;
+    font-family: "Segoe UI",Arial,sans-serif;
+    display: block;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.sidenav a:hover {
+    background-color: #cccccc;
+}
+
+.sidenav a.active {
+    background-color: #4CAF50;
+}
+
+.main {
+    margin-left: 15%; /* Same as the width of the sidenav */
+    padding: 0px 10px;
+    padding: 6px 12px;
+    border-top: none;
+    animation: fadeEffect 1s; /* Fading effect takes 1 second */
+}
+
+@media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+}
+
+/* Go from zero to full opacity */
+@keyframes fadeEffect {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}

@@ -45,12 +45,15 @@ public class RegistrationServlet extends HttpServlet {
         String phone = request.getParameter("phone");
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
+
         if (userName.trim().isEmpty() || password.trim().isEmpty() || firstName.trim().isEmpty() 
         		|| lastName.trim().isEmpty() || address.trim().isEmpty()) {
         	String errorMessage = "Please fill all fields.";
           	 
             request.setAttribute("errorMessage", errorMessage);
- 
+            set_parameters(request, firstName, lastName,
+            		password, password2, email, address,
+            		phone, userName);
             RequestDispatcher dispatcher //
                     = this.getServletContext().getRequestDispatcher("/WEB-INF/views/registration.jsp");
  
@@ -61,7 +64,9 @@ public class RegistrationServlet extends HttpServlet {
         	String errorMessage = "Repeated Password Doesn't match original one.";
         	 
             request.setAttribute("errorMessage", errorMessage);
- 
+            set_parameters(request, firstName, lastName,
+            		password, password2, email, address,
+            		phone, userName);
             RequestDispatcher dispatcher //
                     = this.getServletContext().getRequestDispatcher("/WEB-INF/views/registration.jsp");
  
@@ -72,7 +77,9 @@ public class RegistrationServlet extends HttpServlet {
         	String errorMessage = "Please enter a valid email.";
        	 
             request.setAttribute("errorMessage", errorMessage);
- 
+            set_parameters(request, firstName, lastName,
+            		password, password2, email, address,
+            		phone, userName);
             RequestDispatcher dispatcher //
                     = this.getServletContext().getRequestDispatcher("/WEB-INF/views/registration.jsp");
  
@@ -85,7 +92,9 @@ public class RegistrationServlet extends HttpServlet {
         	String errorMessage = "Please enter a valid phone number(less than or equal to 15 digits).";
        	 
             request.setAttribute("errorMessage", errorMessage);
- 
+            set_parameters(request, firstName, lastName,
+            		password, password2, email, address,
+            		phone, userName);
             RequestDispatcher dispatcher //
                     = this.getServletContext().getRequestDispatcher("/WEB-INF/views/registration.jsp");
  
@@ -98,7 +107,9 @@ public class RegistrationServlet extends HttpServlet {
             String errorMessage = error;
  
             request.setAttribute("errorMessage", errorMessage);
- 
+            set_parameters(request, firstName, lastName,
+            		password, password2, email, address,
+            		phone, userName);
             RequestDispatcher dispatcher //
                     = this.getServletContext().getRequestDispatcher("/WEB-INF/views/registration.jsp");
  
@@ -109,5 +120,18 @@ public class RegistrationServlet extends HttpServlet {
 
         response.sendRedirect(request.getContextPath() + "/login");
  
+    }
+    
+    static void set_parameters(HttpServletRequest request, String firstName, String lastName,
+    		String password, String password2, String email, String address,
+    		String phone, String username) {
+    	request.setAttribute("firstName", firstName);
+    	request.setAttribute("lastName", lastName);
+    	request.setAttribute("username", username);
+    	request.setAttribute("phone", phone);
+    	request.setAttribute("address", address);
+    	request.setAttribute("password", password);
+    	request.setAttribute("password2", password2);
+    	request.setAttribute("email", email);
     }
 }

@@ -12,7 +12,7 @@ import bean.User;
 import provider.ConnectionProvider;
 
 public class UserDataDAO {
-	 static final String[] attributes = {"password", "email", "firstName", "lastName", "phone", "address"};
+	 static final String[] attributes = {"username","password", "email", "firstName", "lastName", "phone", "address"};
 	   // Find a User by userName and password.
 	   public static User findUser(String userName, String password) {
 		   try{  
@@ -69,6 +69,7 @@ public class UserDataDAO {
 			   Connection con= ConnectionProvider.getCon();
 			   StringBuilder sql = new StringBuilder("Update User Set ");
 			   List<String> values = new ArrayList<String> ();
+			   values.add(user.getUsername());
 			   values.add(user.getPassword());
 			   values.add(user.getEmail());
 			   values.add(user.getFirstName());

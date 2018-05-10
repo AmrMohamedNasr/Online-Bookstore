@@ -4,16 +4,15 @@
    <head>
       <meta charset="UTF-8">
       <title>Page not found</title>
+      <link rel="stylesheet" type="text/css" href="css/nav_bar.css" />
    </head>
    <body>
-    
-      <a href="${pageContext.request.contextPath}/home">
- 		 Home
-	</a>
+ <div class='pagebody'>
+     <jsp:include page="_menu.jsp"></jsp:include>
     
       <br/><br/>
        
       <h3 style="color:red;">Error 404 : Page not found</h3>
-             
-   </body>
+</div>
+</body>
 </html>

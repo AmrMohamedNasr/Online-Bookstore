@@ -3,6 +3,8 @@ package bean;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
 
 public class Book {
 	private Integer isbn;
@@ -13,7 +15,6 @@ public class Book {
 	private Integer copiesNumber;
 	private Integer cid;
 	private Integer pid;
-	
 	public Book(Integer isbn, String title, Date publicationDate, Integer threshold,
 			Integer price, Integer copies, Integer cid, Integer pid) {
 		this.isbn = isbn;
@@ -27,15 +28,24 @@ public class Book {
 	}
 	public Book(ResultSet set) {
 		try {
+			GregorianCalendar calender = new GregorianCalendar();
+			calender.setLenient(true);
 			this.isbn = set.getInt(1);
 			this.title = set.getString(2);
-			this.publicationDate = set.getDate(3);
+			java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(set.getString(3));
+			this.publicationDate = new Date(utilDate.getTime());
+			//System.out.println(set.getString(3) +" >>> "+ utilDate.toString() + " === " + this.publicationDate.toString());
 			this.threshold = set.getInt(4);
 			this.price = set.getInt(5);
 			this.copiesNumber = set.getInt(6);
 			this.cid = set.getInt(7);
 			this.pid = set.getInt(8);
-		} catch (SQLException e) {}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(isbn);
+		}
 		
 	}
 

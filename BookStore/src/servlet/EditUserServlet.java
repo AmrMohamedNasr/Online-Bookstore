@@ -26,7 +26,7 @@ public class EditUserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
- 
+    	String username = request.getParameter("username");
         String oldPassword = request.getParameter("oldpassword");
     	String password = request.getParameter("password");
         String password2 = request.getParameter("password2");
@@ -85,7 +85,7 @@ public class EditUserServlet extends HttpServlet {
 		        }
         	}
         } else {
-	        if (firstName.trim().isEmpty() 
+	        if (username.trim().isEmpty() || firstName.trim().isEmpty() 
 	        		|| lastName.trim().isEmpty() || address.trim().isEmpty()) {
 	        	message = "Please fill all fields.";
 	          	code = 400;
@@ -101,7 +101,7 @@ public class EditUserServlet extends HttpServlet {
 	        	message = "Please enter a valid phone number(less than or equal to 15 digits).";
 	       	 	code = 400;
 	        }
-	        User userAccount = new User(loggedIn.getUsername(), "",
+	        User userAccount = new User(username, "",
 	        		email, loggedIn.getUid(), loggedIn.isManager(),
 	        		firstName, lastName, phone, address);
 	        if (code == 200) {
