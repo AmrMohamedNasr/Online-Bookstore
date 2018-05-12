@@ -28,7 +28,15 @@
 			edit_user();
 		 	e.preventDefault()
 		});
-		
+		$('#hasStock').change(function() {
+	        if($(this).is(":checked")) {
+	        	$('#my-final-table').data('dynatable').queries.add('hasStock', 'yes');
+	        	$('#my-final-table').data('dynatable').process();
+	        } else {
+	        	$('#my-final-table').data('dynatable').queries.add('hasStock', 'no');
+	        	$('#my-final-table').data('dynatable').process();
+	        }       
+	    });
 		$("#passwordForm").submit(function(e) {
 			edit_password();
 		 	e.preventDefault()
@@ -73,7 +81,7 @@
 			    ajaxMethod: 'GET',
 			    ajaxDataType: 'json',
 			    records:[],
-			    perPageDefault: 10,
+			    perPageDefault: 5,
 			    perPageOptions: [5, 10, 25, 50, 100]
 			  },
 			  params: {
@@ -92,7 +100,8 @@
 		);
 		$('#cartTable').dynatable({
 			features:{
-				pushState:false
+				pushState:false,
+				search:false
 			},
 			dataset:{
 				perPageDefault: 5,
@@ -257,8 +266,9 @@
 	  	<td><textarea rows="3" cols="50" id="iauthor"name="authors" form="bookSearchForm" placeholder="Enter authors names seperated by ;"  style="width:70%;resize: none;"></textarea></td>
 	  	</tr>
 	  	</table>
+	  	<input type="checkbox" id="hasStock"name="hasStock" value="yes" ><span><b>In Stock</b></span><br>
       </form>
-    
+    <br>
       <div id="searchDiv" style="display:block">
       <table id="my-final-table">
 		  <thead>

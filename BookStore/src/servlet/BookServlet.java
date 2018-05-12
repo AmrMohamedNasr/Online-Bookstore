@@ -49,6 +49,8 @@ public class BookServlet extends HttpServlet {
         String pageS = request.getParameter("page");
         String perPageS = request.getParameter("perPage");
         String offsetS = request.getParameter("offset");
+        String hasStock = request.getParameter("queries[hasStock]");
+        boolean hasStockB = hasStock != null && hasStock.equals("yes");
         StringBuilder sort_attr = new StringBuilder();
         handle_sort_attr_parsing(request, sort_attr);
         int page = 0,perPage = 0,offset = 0;
@@ -174,7 +176,8 @@ public class BookServlet extends HttpServlet {
     	Book searchBook = new Book(iIsbn, title, date, null, pr1, null, null, null);
     	AtomicInteger queryCount = new AtomicInteger(0);
     	List<Book> books = BookDataDAO.selectBookQuery(searchBook, pr1, pr2, authors, categories, pubs,
-    			perPage, offset, queryCount, sort_attr.toString().isEmpty()?null:sort_attr.toString());
+    			perPage, offset, queryCount, sort_attr.toString().isEmpty()?null:sort_attr.toString(),
+    					hasStockB);
     	JSONArray array = new JSONArray();
     	Cart userCart = AppUtils.getCart(request.getSession());
     	for (int i = 0;books != null && i < books.size(); i++) {

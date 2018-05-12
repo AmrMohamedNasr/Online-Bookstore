@@ -41,7 +41,7 @@ public class BookDataDAO {
 	      return null;
    }
 	public static List<Book> selectBookQuery(Book book, Float pr1, Float pr2, List<List<Author>> authors, List<Category> cids, List<Publisher> pids,
-			int limit, int offset, AtomicInteger queryCount, String sort_attr) {
+			int limit, int offset, AtomicInteger queryCount, String sort_attr, boolean hasStock) {
 		try {
 			Connection connect = ConnectionProvider.getCon();
 			boolean sauthor = authors != null && !authors.isEmpty();
@@ -119,6 +119,13 @@ public class BookDataDAO {
 					sb.append(" and ");
 				}
 				sb.append("PublicationDate = ? ");
+				prev_cond = true;
+			}
+			if (hasStock) {
+				if (prev_cond) {
+					sb.append(" and ");
+				}
+				sb.append("CopiesNumber > 0 ");
 				prev_cond = true;
 			}
 			if (scategory) {
