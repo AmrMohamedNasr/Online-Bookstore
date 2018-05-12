@@ -76,6 +76,7 @@ public class UserDataDAO {
 			   values.add(user.getLastName());
 			   values.add(user.getPhone());
 			   values.add(user.getAddress());
+			   List<String> options = new ArrayList<String> ();
 			   boolean prevAdded = false;
 			   for (int i = 0; i < attributes.length; i++) {
 				   if (!values.get(i).isEmpty()) {
@@ -83,13 +84,12 @@ public class UserDataDAO {
 						   sql.append(" , ");
 					   }
 					   sql.append(attributes[i]);
-					   sql.append(" = \'");
+					   sql.append(" = ? ");
 					   if (attributes[i].equals("password")) {
-						   sql.append(md5(values.get(i)));
+						   options.add(md5(values.get(i)));
 					   } else {
-						   sql.append(values.get(i));
+						   options.add(values.get(i));
 					   }
-					   sql.append("\'");
 					   prevAdded = true;
 				   }
 			   }
@@ -105,7 +105,11 @@ public class UserDataDAO {
 			   }
 			   sql.append(" where uid = ?");
 			   PreparedStatement ps=con.prepareStatement(sql.toString());  
-			   ps.setInt(1, user.getUid());
+			   int i = 0;
+			   for (i = 0; i < options.size(); i++) {
+				   ps.setString(i + 1, options.get(i));
+			   }
+			   ps.setInt(i + 1, user.getUid());
 			   ps.executeUpdate(); 
 			   return null;
 		   } catch (SQLException ex) {

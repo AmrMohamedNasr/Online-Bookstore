@@ -325,9 +325,9 @@ public class BookServlet extends HttpServlet {
     	handle_sort_single_attr("isbn", request.getParameter("sorts[isbn]"), sort_builder);
     	handle_sort_single_attr("title", request.getParameter("sorts[title]"), sort_builder);
     	handle_sort_single_attr("price", request.getParameter("sorts[price]"), sort_builder);
-    	handle_sort_single_attr("cid", request.getParameter("sorts[category]"), sort_builder);
+    	handle_sort_single_attr("Category.name", request.getParameter("sorts[category]"), sort_builder);
     	handle_sort_single_attr("publicationDate", request.getParameter("sorts[publicationDate]"), sort_builder);
-    	handle_sort_single_attr("pid", request.getParameter("sorts[publisher]"), sort_builder);
+    	handle_sort_single_attr("Publisher.name", request.getParameter("sorts[publisher]"), sort_builder);
     	handle_sort_single_attr("copiesNumber", request.getParameter("sorts[inStock]"), sort_builder);
     }
     public static void handle_sort_single_attr(String attr, String s, StringBuilder sort_builder) {

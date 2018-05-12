@@ -48,67 +48,77 @@ public class BookDataDAO {
 			boolean scategory = cids != null && !cids.isEmpty();
 			boolean spublisher = pids != null && !pids.isEmpty();
 			StringBuilder sb2 = new StringBuilder();
+			List<Integer> iOptions = new ArrayList<Integer>();
+			List<Float> fOptions = new ArrayList<Float>();
+			if (sort_attr != null && sort_attr.contains("Category.name")) {
+				sb2.append("(");
+			}
+			if (sort_attr != null && sort_attr.contains("Publisher.name")) {
+				sb2.append("(");
+			}
 			if (sauthor) {
 				sb2.append("(Book natural join AuthoredBy natural join Author) ");
 			} else {
 				sb2.append(" Book ");
 			}
+			if (sort_attr != null && sort_attr.contains("Category.name")) {
+				sb2.append(" inner join Category on Category.cid = Book.cid)");
+			}
+			if (sort_attr != null && sort_attr.contains("Publisher.name")) {
+				sb2.append(" inner join Publisher on Publisher.pid = Book.pid)");
+			}
 			StringBuilder sb = new StringBuilder();
 			sb.append(" where ");
 			boolean prev_cond = false;
 			if (book.getIsbn() != null) {
-				sb.append("ISBN = ");
-				sb.append((int)book.getIsbn());
-				prev_cond = true;
-			}
-			if (book.getTitle() != null) {
-				if (prev_cond) {
-					sb.append(" and ");
-				}
-				sb.append("title like \'%");
-				sb.append(book.getTitle());
-				sb.append("%\'");
-				prev_cond = true;
-			}
-			if (book.getPublicationDate() != null) {
-				if (prev_cond) {
-					sb.append(" and ");
-				}
-				sb.append("PublicationDate = \'");
-				sb.append(book.getPublicationDate().toString());
-				sb.append("\'");
-				prev_cond = true;
-			}
-			if (book.getThreshold() != null) {
-				if (prev_cond) {
-					sb.append(" and ");
-				}
-				sb.append("threshold = ");
-				sb.append((int)book.getThreshold());
-				prev_cond = true;
-			}
-			if (pr1 != null) {
-				if (prev_cond) {
-					sb.append(" and ");
-				}
-				sb.append("price >= ");
-				sb.append(pr1);
-				prev_cond = true;
-			}
-			if (pr2 != null) {
-				if (prev_cond) {
-					sb.append(" and ");
-				}
-				sb.append("price <= ");
-				sb.append(pr2);
+				sb.append("ISBN = ? ");
+				iOptions.add(book.getIsbn());
 				prev_cond = true;
 			}
 			if (book.getCopiesNumber() != null) {
 				if (prev_cond) {
 					sb.append(" and ");
 				}
-				sb.append("CopiesNumber = ");
-				sb.append((int)book.getCopiesNumber());
+				sb.append("CopiesNumber = ? ");
+				iOptions.add(book.getCopiesNumber());
+				prev_cond = true;
+			}
+			if (book.getThreshold() != null) {
+				if (prev_cond) {
+					sb.append(" and ");
+				}
+				sb.append("threshold = ? ");
+				iOptions.add(book.getThreshold());
+				prev_cond = true;
+			}
+			if (pr1 != null) {
+				if (prev_cond) {
+					sb.append(" and ");
+				}
+				sb.append("price >= ?");
+				fOptions.add(pr1);
+				prev_cond = true;
+			}
+			if (pr2 != null) {
+				if (prev_cond) {
+					sb.append(" and ");
+				}
+				sb.append("price <= ?");
+				fOptions.add(pr2);
+				prev_cond = true;
+			}
+			if (book.getTitle() != null) {
+				if (prev_cond) {
+					sb.append(" and ");
+				}
+				sb.append("title like ? ");
+				prev_cond = true;
+			}
+			if (book.getPublicationDate() != null) {
+				if (prev_cond) {
+					sb.append(" and ");
+				}
+				sb.append("PublicationDate = ? ");
 				prev_cond = true;
 			}
 			if (scategory) {
@@ -120,7 +130,7 @@ public class BookDataDAO {
 					if (i != 0) {
 						sb.append(" or ");
 					}
-					sb.append("cid = ");
+					sb.append("Book.cid = ");
 					sb.append((int)cids.get(i).getCid());
 				}
 				sb.append(")");
@@ -135,7 +145,7 @@ public class BookDataDAO {
 					if (i != 0) {
 						sb.append(" or ");
 					}
-					sb.append("pid = ");
+					sb.append("Book.pid = ");
 					sb.append((int)pids.get(i).getPid());
 				}
 				sb.append(")");
@@ -183,14 +193,53 @@ public class BookDataDAO {
 				sb2.append(" ");
 			}
 			if (limit != 0) {
-				sb2.append(" limit " + limit);
+				sb2.append(" limit ? ");
 			}
-			sb2.append(" offset " + offset);
-			ResultSet set = connect.createStatement().executeQuery("SELECT Distinct ISBN, "
+			sb2.append(" offset ? ");
+			StringBuilder sb1 = new StringBuilder("SELECT Distinct ISBN, "
 					+ "Title,PublicationDate,Threshold,"
-					+ "Price,CopiesNumber,CID,PID From "+ sb2.toString());
+					+ "Price,CopiesNumber,Book.CID,Book.PID ");
+			if (sort_attr != null && sort_attr.contains("Category.name")) {
+				sb1.append(",Category.name");
+			}
+			if (sort_attr != null && sort_attr.contains("Publisher.name")) {
+				sb1.append(",Publisher.name");
+			}
+			sb1.append(" From ");
+			sb1.append(sb2);
+			PreparedStatement ps1 = connect.prepareStatement(sb1.toString());
+			PreparedStatement ps2 = connect.prepareStatement(sb3.toString());
+			int i = 0;
+			int ia = 0;
+			for (i = 0; i < iOptions.size(); i++) {
+				ps1.setInt(i+1, iOptions.get(i));
+				ps2.setInt(i+1, iOptions.get(i));
+			}
+			ia = i;
+			for (i = 0; i < fOptions.size(); i++) {
+				ps1.setFloat(ia + i + 1, fOptions.get(i));
+				ps2.setFloat(ia + i + 1, fOptions.get(i));
+			}
+			ia += i + 1;
+			if (book.getTitle() != null) {
+				ps1.setString(ia, "%" + book.getTitle() + "%");
+				ps2.setString(ia, "%" + book.getTitle() + "%");
+				ia++;
+				
+			}
+			if (book.getPublicationDate() != null) {
+				ps1.setDate(ia , book.getPublicationDate());
+				ps2.setDate(ia , book.getPublicationDate());
+				ia++;
+			}
+			if (limit != 0) {
+				ps1.setInt(ia, limit);
+				ia++;
+			}
+			ps1.setInt(ia, offset);
+			ResultSet set = ps1.executeQuery();
 			List<Book> books = new ArrayList<Book> ();
-			ResultSet set2 = connect.createStatement().executeQuery(sb3.toString());
+			ResultSet set2 = ps2.executeQuery();
 			set2.next();
 			queryCount.set(set2.getInt(1));
 			while (set.next()) {
