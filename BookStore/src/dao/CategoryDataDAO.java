@@ -35,12 +35,27 @@ public class CategoryDataDAO {
 	public static List<Category> searchCategory(Category category) {
 		try{  
 			Connection con= ConnectionProvider.getCon(); 
-			   StringBuilder sql = new StringBuilder("Select * From Category where ");
-			   sql.append("name like \'%");
-			   sql.append(category.getName());
-			   sql.append("%\'");
-			   PreparedStatement ps=con.prepareStatement(  
-			       sql.toString());  
+			PreparedStatement ps=con.prepareStatement("Select * From Category where name like ?");  
+			   ps.setString(1, "%" + category.getName() + "%"); 
+			   
+			   ResultSet set = ps.executeQuery(); 
+			   List<Category> pubs = new ArrayList<Category>();
+			   while(set.next()) {
+				   pubs.add(new Category(set));
+			   }
+			   return pubs;
+		   } catch (SQLException ex) {
+			   return null;
+		   }catch(Exception e){
+			   e.printStackTrace();
+		   }  
+		   return null;
+	}
+	public static List<Category> getFirstMatchCategory(Category category) {
+		try{  
+			Connection con= ConnectionProvider.getCon(); 
+			PreparedStatement ps=con.prepareStatement("Select * From Category where name like ? limit 10");  
+			   ps.setString(1, category.getName() + "%"); 
 			   
 			   ResultSet set = ps.executeQuery(); 
 			   List<Category> pubs = new ArrayList<Category>();

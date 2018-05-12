@@ -15,13 +15,28 @@ public class AuthorDataDAO {
 	public static List<Author> searchAuthor(Author author) {
 		try{  
 			   Connection con= ConnectionProvider.getCon(); 
-			   StringBuilder sql = new StringBuilder("Select * From Author where ");
-			   sql.append("name like \'%");
-			   sql.append(author.getName());
-			   sql.append("%\'");
-			   PreparedStatement ps=con.prepareStatement(  
-			       sql.toString());  
 			   
+			   
+			   PreparedStatement ps = con.prepareStatement("Select * From Author where name like ? ");
+			   ps.setString(1, "%" + author.getName() + "%"); 
+			   ResultSet set = ps.executeQuery(); 
+			   List<Author> pubs = new ArrayList<Author>();
+			   while(set.next()) {
+				   pubs.add(new Author(set));
+			   }
+			   return pubs;
+		   } catch (SQLException ex) {
+			   return null;
+		   }catch(Exception e){
+			   e.printStackTrace();
+		   }  
+		   return null;
+	}
+	public static List<Author> searchFirstMatchAuthor(Author author) {
+		try{  
+			   Connection con= ConnectionProvider.getCon(); 
+			   PreparedStatement ps = con.prepareStatement("Select * From Author where name like ? limit 10");
+			   ps.setString(1, author.getName() + "%"); 
 			   ResultSet set = ps.executeQuery(); 
 			   List<Author> pubs = new ArrayList<Author>();
 			   while(set.next()) {

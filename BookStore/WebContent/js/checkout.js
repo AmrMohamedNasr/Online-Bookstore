@@ -75,11 +75,13 @@ $(function() {
 	        		   $(location).attr('href',serverUrl + "/user");
 	        	   } else {
 	        		   make_notification(data.message);
+	        		   $(location).attr('href',serverUrl + "/user");
 	        	   }
 	           },
 	           error:function(result)
  		        {
  		        	   make_notification(data.message);
+ 		        	  $(location).attr('href',serverUrl + "/user");
  		       	}
  		     });
             cardNumber.val("");

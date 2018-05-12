@@ -41,32 +41,93 @@ public class PublisherDataDAO {
 			   StringBuilder sql = new StringBuilder("Select * From Publisher where ");
 			   boolean prev_added = false;
 			   if (phone) {
-				   sql.append("phone like \'%");
-				   sql.append(publisher.getPhone());
-				   sql.append("%\'");
+				   sql.append("phone like ? ");
 				   prev_added = true;
 			   }
 			   if (name) {
 				   if (prev_added) {
 					   sql.append(" and ");
 				   }
-				   sql.append(" name like \'%");
-				   sql.append(publisher.getName());
-				   sql.append("%\'");
+				   sql.append(" name like ? ");
 				   prev_added = true;
 			   }
 			   if (address) {
 				   if (prev_added) {
 					   sql.append(" and ");
 				   }
-				   sql.append(" address like \'%");
-				   sql.append(publisher.getAddress());
-				   sql.append("%\'");
+				   sql.append(" address like ?");
+				   prev_added = true;
+			   }
+			   sql.append(" limit 10");
+			   PreparedStatement ps=con.prepareStatement(  
+			       sql.toString());  
+			   int col = 1;
+			   if (phone) {
+				   ps.setString(col, publisher.getPhone() + "%");
+				   col++;
+			   }
+			   if (name) {
+				   ps.setString(col, publisher.getName() + "%");
+				   col++;
+			   }
+			   if (address) {
+				   ps.setString(col, publisher.getAddress() + "%");
+				   col++;
+			   }
+			   ResultSet set = ps.executeQuery(); 
+			   List<Publisher> pubs = new ArrayList<Publisher>();
+			   while(set.next()) {
+				   pubs.add(new Publisher(set));
+			   }
+			   return pubs;
+		   } catch (SQLException ex) {
+			   return null;
+		   }catch(Exception e){
+			   e.printStackTrace();
+		   }  
+		   return null;
+	}
+	public static List<Publisher> searchFirstMatchPublisher(Publisher publisher) {
+		try{  
+			   Connection con= ConnectionProvider.getCon(); 
+			   boolean name = publisher.getName() != null,
+					  address = publisher.getAddress() != null,
+					  phone = publisher.getPhone() != null;
+			   StringBuilder sql = new StringBuilder("Select * From Publisher where ");
+			   boolean prev_added = false;
+			   if (phone) {
+				   sql.append("phone like ? ");
+				   prev_added = true;
+			   }
+			   if (name) {
+				   if (prev_added) {
+					   sql.append(" and ");
+				   }
+				   sql.append(" name like ? ");
+				   prev_added = true;
+			   }
+			   if (address) {
+				   if (prev_added) {
+					   sql.append(" and ");
+				   }
+				   sql.append(" address like ?");
 				   prev_added = true;
 			   }
 			   PreparedStatement ps=con.prepareStatement(  
 			       sql.toString());  
-			   
+			   int col = 1;
+			   if (phone) {
+				   ps.setString(col, "%" + publisher.getPhone() + "%");
+				   col++;
+			   }
+			   if (name) {
+				   ps.setString(col, "%" + publisher.getName() + "%");
+				   col++;
+			   }
+			   if (address) {
+				   ps.setString(col, "%" + publisher.getAddress() + "%");
+				   col++;
+			   }
 			   ResultSet set = ps.executeQuery(); 
 			   List<Publisher> pubs = new ArrayList<Publisher>();
 			   while(set.next()) {

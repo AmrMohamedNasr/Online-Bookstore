@@ -202,6 +202,26 @@ public class BookDataDAO {
 		}
 		return null;	
 	}
+	public static List<Book> searchFirstMatchBook(String title) {
+		try{  
+		   Connection con= ConnectionProvider.getCon();     
+		   PreparedStatement ps=con.prepareStatement(  
+		       "select * from Book where title like ? limit 10");  
+		   List<Book> books = new ArrayList<Book> ();
+		   ps.setString(1, title + "%");  
+		   ResultSet set = ps.executeQuery(); 
+		   
+		   while (set.next()) {
+				books.add(new Book(set));
+			}
+			return books;
+		                 
+	   }catch(Exception e){
+		   e.printStackTrace();
+	   }  
+      
+      return null;
+	}
 	public static int total_record() {
 		try {
 			Connection connect = ConnectionProvider.getCon();

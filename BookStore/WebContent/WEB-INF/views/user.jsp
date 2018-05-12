@@ -116,8 +116,87 @@
                 }
           	});
 		});
+		$('#icategory').autocomplete({
+			source:function(request, response) {
+				$.ajax({
+                    url: "auto",
+                    type: "GET",
+                    data: {
+                        term: request.term,
+                        type: "category"
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                        response(data);
+                    }
+                });
+			}
+		});
+		$('#ipublisher').autocomplete({
+			source:function(request, response) {
+				$.ajax({
+                    url: "auto",
+                    type: "GET",
+                    data: {
+                        term: request.term,
+                        type: "publisher"
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                        response(data);
+                    }
+                });
+			}
+		});
+		$('#ititle').autocomplete({
+			source:function(request, response) {
+				$.ajax({
+                    url: "auto",
+                    type: "GET",
+                    data: {
+                        term: request.term,
+                        type: "title"
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                        response(data);
+                    }
+                });
+			}
+		});
+		$('#iauthor').autocomplete({
+			source:function(request, response) {
+				var tok = request.term.substring(request.term.lastIndexOf("\n") + 1);
+					if(tok.length != 0) {
+					$.ajax({
+	                    url: "auto",
+	                    type: "GET",
+	                    data: {
+	                        term: tok,
+	                        type: "author"
+	                    },
+	                    dataType: "json",
+	                    success: function(data) {
+	                        response(data);
+	                    }
+	                });
+				}
+			},
+			select:function(event, data) {
+				event.preventDefault();
+				var tok = $('#iauthor').val();
+				tok = tok.substring(0, tok.lastIndexOf("\n") + 1);
+				var s = "";
+                if (typeof data == "undefined") {
+                  tok = $('#iauthor').val();
+                }else {
+                  tok += data.item.value;
+                }
+                $('#iauthor').val(tok);
+			}
+		});
+		
 	});
-	
 	function toggle_credit_display() {
 	    var x = document.getElementById("fullcartdiv2");
 	    var y = document.getElementById("fullcartdiv1");
