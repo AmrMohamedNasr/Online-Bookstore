@@ -6,15 +6,16 @@
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>User</title>
-
+<!--   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
 <link rel="stylesheet" type="text/css" href="css/side_nav.css" />
 <link rel="stylesheet" type="text/css" href="css/nav_bar.css" />
 <link rel="stylesheet" type="text/css" href="css/general.css" />
+<script type="text/javascript" src="js/jquery-3.3.1.min.js" ></script>
 <script type="text/javascript" src="js/side_nav.js" ></script>
 <script type="text/javascript" src="js/cart.js" ></script>
 <script type="text/javascript" src="js/user.js" ></script>
-<script type="text/javascript" src="js/book.js" ></script>
-<script type="text/javascript" src="js/jquery-3.3.1.min.js" ></script>
+<script type="text/javascript" src="js/checkout.js" ></script>
+<script type="text/javascript" src="js/jquery.payform.min.js" ></script>
 <script type="text/javascript" src="js/jquery.dynatable.js" ></script>
 <link rel="stylesheet" media="all" href="https://s3.amazonaws.com/dynatable-docs-assets/css/jquery.dynatable.css" />
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
@@ -32,25 +33,100 @@
 			edit_password();
 		 	e.preventDefault()
 		});
-		
 		$( "#datepicker" ).datepicker();
-		$('#my-final-table').dynatable();
-		$('#cartTable').dynatable();
-		
-		$("#bookSearchForm").submit(function(e) {
-			search_books($('#my-final-table'), $("#searchResult"), $('#searchDiv'), $("#bookSearchForm"));
-		    e.preventDefault();
+		$('#my-final-table').dynatable(
+			{
+			  features: {
+			    paginate: true,
+			    sort: true,
+			    pushState: false,
+			    search: false,
+			    recordCount: true,
+			    perPageSelect: true
+			  },
+			  inputs: {
+			    queries: $("#iisbn,#ititle,#datepicker,#iprice1,#iprice2,#icategory,#ipublisher,#iauthor") ,
+			    sorts: null,
+			    multisort: null,
+			    page: null,
+			    queryEvent: 'blur change',
+			    recordCountTarget: null,
+			    recordCountPlacement: 'after',
+			    paginationLinkTarget: null,
+			    paginationLinkPlacement: 'after',
+			    paginationPrev: 'Previous',
+			    paginationNext: 'Next',
+			    paginationGap: [1,2,2,1],
+			    searchTarget: null,
+			    searchPlacement: 'before',
+			    perPageTarget: null,
+			    perPagePlacement: 'before',
+			    perPageText: 'Show: ',
+			    recordCountText: 'Showing ',
+			    processingText: 'Processing...'
+			  },
+			  dataset: {
+			    ajax: true,
+			    ajaxUrl: "${pageContext.request.contextPath}/book",
+			    ajaxCache:true,
+			    ajaxOnLoad: true,
+			    ajaxMethod: 'GET',
+			    ajaxDataType: 'json',
+			    records:[],
+			    perPageDefault: 10,
+			    perPageOptions: [5, 10, 25, 50, 100]
+			  },
+			  params: {
+			    dynatable: 'dynatable',
+			    queries: 'queries',
+			    sorts: 'sorts',
+			    page: 'page',
+			    perPage: 'perPage',
+			    offset: 'offset',
+			    records: 'records',
+			    record: null,
+			    queryRecordCount: 'queryRecordCount',
+			    totalRecordCount: 'totalRecordCount'
+			  }
+			}
+		);
+		$('#cartTable').dynatable({
+			features:{
+				pushState:false
+			},
+			dataset:{
+				perPageDefault: 5,
+			    perPageOptions: [5, 10, 25, 50, 100]
+			}
+		});
+		$('#my-final-table').bind('dynatable:ajax:success', function (e, data) {
+			if (data.code == 200) {
+				$("#searchResult").text("");
+				$("#searchResult").css('color', 'green');
+			} else {
+				$("#searchResult").text(data.message);
+				$("#searchResult").css('color', 'red');
+			}
+		});
+		$('#cartTable').bind('dynatable:afterProcess', function(e, data) {
+			$( ".enterTextbox" ).keypress(function(e) {
+            	if (e.which == 13) {
+                    modify_cart($(this).attr('id'), $(this).val());
+                    update_cart_table();
+                }
+          	});
 		});
 	});
 	
 	function toggle_credit_display() {
-	    var x = document.getElementById("creditDiv");
+	    var x = document.getElementById("fullcartdiv2");
+	    var y = document.getElementById("fullcartdiv1");
 	    if (x.style.display === "none") {
 	        x.style.display = "block";
-	        $('#showCheckout').text("Hide Checkout");
+	        y.style.display = "none";
 	    } else {
-	        x.style.display = "none";
-	        $('#showCheckout').text("Show Checkout");
+	    	x.style.display = "none";
+	        y.style.display = "block";
 	    }
 	}
 </script>
@@ -75,45 +151,36 @@
 	<!-- Tab content -->
 	<div id="Search" class="main" style='display:block'>
 	  <h3>Search For Books</h3><hr>
-	  <form method="POST" id = "bookSearchForm">
-         <table border="0">
-         	<tr>
-               <td>ISBN</td>
-               <td><input type="text" name="isbn" value= "" /> </td>
-            </tr>
-            <tr>
-               <td>Title</td>
-               <td><input type="text" name="title" value= "" /> </td>
-            </tr>
-            <tr>
-               <td>Publication Date</td>
-               <td><input type="text" id="datepicker" name="date" value= "" /> </td>
-            </tr>
-            <tr>
-               <td>Price</td>
-               <td><input type="text" name="price" value= "" /> </td>
-            </tr>
-            <tr>
-               <td>Category</td>
-               <td><input type="text" name="category" value= "" /> </td>
-            </tr>
-            <tr>
-               <td>Publisher</td>
-               <td><input type="text" name="publisher" value= "" /> </td>
-            </tr>
-            <tr>
-               <td>Authors</td>
-               <td><textarea rows="4" cols="50" name="authors" form="bookSearchForm"></textarea> </td>
-            </tr>
-            <tr>
-               <td colspan ="2">
-                  <input type="submit" value= "Search" />
-               </td>
-            </tr>
-         </table>
+	  <form id = "bookSearchForm">
+	  	<table width = 100%>
+	  	<tr>
+	  	<td style="width:20%"><label for="isbn"><b>ISBN : </b></label></td>
+	  	<td style="width:30%"><input type="text" id = "iisbn" name="isbn" value= "" placeholder="Enter ISBN" style="width:70%"/></td>
+	  	<td style="width:20%"><label for = "title"><b>Title : </b></label></td>
+	  	<td style="width:30%"><input type="text" id = "ititle" name="title" value= "" placeholder = "Enter Title" style="width:70%"/></td>
+	  	</tr>
+	  	<tr>
+	  	<td><label for = "price1"><b>Lowest Price : </b></label></td>
+	  	<td><input type="text" id = "iprice1" name="price1" value= "" placeholder= "Enter Lowest Price" style="width:70%"/></td>
+	  	<td><label for = "price2"><b>Highest Price : </b></label></td>
+	  	<td><input type="text" id = "iprice2" name="price2" value= "" placeholder= "Enter Highest Price" style="width:70%"/></td>
+	  	</tr>
+	  	<tr>
+	  	<td><label for="category"><b>Category : </b></label></td>
+	  	<td><input type="text" id = "icategory" name="category" value= "" placeholder = "Enter Category" style="width:70%"/></td>
+	  	<td><label for="publisher"><b>Publisher : </b></label></td>
+	  	<td><input type="text" id = "ipublisher" name="publisher" value= "" placeholder="Enter publisher name" style="width:70%"/> </td>
+	  	</tr>
+	  	<tr>
+	  	<td><label for = "date"><b>Publication Date : </b></label></td>
+	  	<td><input type="text" id="datepicker" name="date" value= "" placeholder = "Enter Publication Date" style="width:70%"/></td>
+	  	<td><label for="authors"><b>Authors : </b></label></td>
+	  	<td><textarea rows="3" cols="50" id="iauthor"name="authors" form="bookSearchForm" placeholder=" Enter authors"  style="width:70%;resize: none;"></textarea></td>
+	  	</tr>
+	  	</table>
       </form>
     
-      <div id="searchDiv" style="display:none">
+      <div id="searchDiv" style="display:block">
       <table id="my-final-table">
 		  <thead>
 		  <tr>
@@ -135,6 +202,18 @@
 	<div id="Cart" class="main" style="display:none">
 	  <h3>My Cart</h3><hr>
 		  <div id="cartDiv1" style="display:none">
+		  <div id="fullcartdiv1">
+		  <table width=100%>
+		  <tr >
+		  <td style="width:50%">
+		  <button id="showCheckout" class="hoverButtonright"onClick="update_cart_table($('#cartDiv1'), $('#cartDiv2'), $('#cartTable'));toggle_credit_display()" style="width:50%"><span>To Checkout</span></button>
+		  	</td>
+		  	<td>
+		  	<button onClick='clear_cart()' style="width:30%;float:right">Clear Cart</button>
+		  	</td>
+		  	</tr>
+		  	</table>
+		  	<p id="totalcartprice"></p>
 		      <table id="cartTable">
 				  <thead>
 				  <tr>
@@ -143,17 +222,111 @@
 				    <th>Price</th>
 				    <th>Copies</th>
 				    <th>Total Price</th>
-				    <th>Change Amount</th>
 				    </tr>
 				  </thead>
 				  <tbody>
 				  </tbody>
 			</table>
-			<button onClick='clear_cart()'>Clear Cart</button>
-			<button id="showCheckout" onClick='toggle_credit_display()'>Show Checkout</button>
-			<div id="creditDiv" style="display:none">
-					<p>:p</p>
+		</div>
+		<div id="fullcartdiv2" style="display:none">
+		<table width=100%>
+		  <tr >
+		  <td style="width:50%">
+		  <button class="hoverButtonleft"onClick="update_cart_table($('#cartDiv1'), $('#cartDiv2'), $('#cartTable'));toggle_credit_display()" style="width:50%"><span> To Cart</span></button>
+			</td>
+		  	<td>
+		  	<button style="width:30%;float:right" id="confirm-purchase">Confirm Purchase</button>
+		  	</td>
+		  	</tr>
+		  	</table>
+			<p id="totalcartprice2"></p>
+			<div class="creditCardForm">
+			    <div class="payment">
+			        <table width=100%>
+			        	<tr>
+			            	<td style = "width:20%"><label for="owner">Owner : </label></td>
+			                <td style = "width:30%"><input type="text" class="form-control" id="owner" placeholder = "Enter Owner Name" style = "width:70%"></td>
+			            	<td style = "width:10%"><label for="cvv">CVV : </label></td>
+			                <td style = "width:30%"><input type="text" class="form-control" id="cvv" placeholder = "Enter ccv" style = "width:70%;float:right"></td>
+			            </tr>
+			            <tr>
+			            	<td><label for="cardNumber">Card Number : </label></td>
+			                <td><input type="text" class="form-control" id="cardNumber" placeholder = "Enter card number" style = "width:70%"></td>
+			            	<td></td>
+			            	<td></td>
+		            	</tr>
+	            		<tr>
+		            		<td><label>Expiration Date : </label></td>
+			                <td>
+				                <select id="cmonth">
+				                    <option value="01">January</option>
+				                    <option value="02">February </option>
+				                    <option value="03">March</option>
+				                    <option value="04">April</option>
+				                    <option value="05">May</option>
+				                    <option value="06">June</option>
+				                    <option value="07">July</option>
+				                    <option value="08">August</option>
+				                    <option value="09">September</option>
+				                    <option value="10">October</option>
+				                    <option value="11">November</option>
+				                    <option value="12">December</option>
+				                </select>
+				                <select id="cyear"> 
+				                    <option value="18"> 2018</option>
+				                    <option value="19"> 2019</option>
+				                    <option value="20"> 2020</option>
+				                    <option value="21"> 2021</option>
+				                    <option value="22"> 2022</option>
+				                    <option value="23"> 2023</option>
+				                </select>
+   			           		</td>
+   			           		<td></td>
+			            <td style = "width:50%">
+			            <div class="form-group" id="credit_cards" style="float:right">
+			                <img src="images/visa.jpg" id="visa">
+			                <img src="images/mastercard.jpg" id="mastercard">
+			                <img src="images/amex.jpg" id="amex">
+			            </div>
+			            </td>
+			            </tr>
+			        </table>
+			    </div>
 			</div>
+			<hr>
+			<p class="examples-note">Here are some dummy credit card numbers and CVV codes so you can test out the form:</p>
+
+        <div class="examples">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Card Number</th>
+                            <th>Security Code</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Visa</td>
+                            <td>4716108999716531</td>
+                            <td>257</td>
+                        </tr>
+                        <tr>
+                            <td>Master Card</td>
+                            <td>5281037048916168</td>
+                            <td>043</td>
+                        </tr>
+                        <tr>
+                            <td>American Express</td>
+                            <td>342498818630298</td>
+                            <td>3156</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+		</div>
 		</div>
 		<div id="cartDiv2" style="display:block">
 			<p>Cart is empty</p>

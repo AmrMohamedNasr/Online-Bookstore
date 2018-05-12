@@ -30,7 +30,10 @@ public class CartServlet extends HttpServlet {
     	int code = 200;
     	String message = "success";
     	Cart cart = AppUtils.getCart(request.getSession());
+    	cart.update_prices();
+    	AppUtils.storeCart(request.getSession(), cart);
     	JSONArray array = new JSONArray();
+    	float totalCartPrice = 0;
     	for (int i = 0;cart.getItems() != null && i < cart.getItems().size(); i++) {
     		JSONObject obj = new JSONObject();
     		Book book = cart.getItems().get(i).getBook();
@@ -39,11 +42,13 @@ public class CartServlet extends HttpServlet {
     		obj.put("price", book.getPrice());
     		obj.put("copies", cart.getItems().get(i).getQuantity());
     		obj.put("totalPrice", book.getPrice() * cart.getItems().get(i).getQuantity());
+    		totalCartPrice += book.getPrice() * cart.getItems().get(i).getQuantity();
     		array.add(obj);
     	}
     	jsonResp.put("code", code);
         jsonResp.put("message", message);
         jsonResp.put("values", array);
+        jsonResp.put("totalcartprice", totalCartPrice);
         response.setStatus(200);
         response.setContentType("application/json");
         response.getWriter().write(jsonResp.toJSONString());

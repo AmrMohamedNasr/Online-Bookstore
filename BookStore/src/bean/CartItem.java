@@ -1,5 +1,7 @@
 package bean;
 
+import dao.BookDataDAO;
+
 public class CartItem {
 	private Book book;
 	private int quantity;
@@ -19,5 +21,10 @@ public class CartItem {
 	}
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
+	}
+	public void update_item() {
+		if (this.book != null) {
+			this.book = BookDataDAO.findBook(this.book.getIsbn());
+		}
 	}
 }

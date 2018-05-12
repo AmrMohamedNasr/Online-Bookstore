@@ -11,12 +11,12 @@ public class Book {
 	private String title;
 	private Date publicationDate;
 	private Integer threshold;
-	private Integer price;
+	private Float price;
 	private Integer copiesNumber;
 	private Integer cid;
 	private Integer pid;
 	public Book(Integer isbn, String title, Date publicationDate, Integer threshold,
-			Integer price, Integer copies, Integer cid, Integer pid) {
+			Float price, Integer copies, Integer cid, Integer pid) {
 		this.isbn = isbn;
 		this.title = title;
 		this.publicationDate = publicationDate;
@@ -36,7 +36,7 @@ public class Book {
 			this.publicationDate = new Date(utilDate.getTime());
 			//System.out.println(set.getString(3) +" >>> "+ utilDate.toString() + " === " + this.publicationDate.toString());
 			this.threshold = set.getInt(4);
-			this.price = set.getInt(5);
+			this.price = set.getFloat(5);
 			this.copiesNumber = set.getInt(6);
 			this.cid = set.getInt(7);
 			this.pid = set.getInt(8);
@@ -73,11 +73,11 @@ public class Book {
 		this.threshold = threshold;
 	}
 
-	public Integer getPrice() {
+	public Float getPrice() {
 		return price;
 	}
 
-	public void setPrice(Integer price) {
+	public void setPrice(Float price) {
 		this.price = price;
 	}
 

@@ -45,3 +45,70 @@ input[type=text], input[type=password] {
 input[type=submit]:hover {
     opacity: 0.8;
 }
+
+button.hoverButtonright {
+  transition: all 0.5s;
+  cursor: pointer;
+}
+
+button.hoverButtonright span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+button.hoverButtonright span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+button.hoverButtonright:hover span {
+  padding-right: 25px;
+}
+
+button.hoverButtonright:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+
+button.hoverButtonleft {
+  transition: all 0.5s;
+  cursor: pointer;
+}
+
+button.hoverButtonleft span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+button.hoverButtonleft span::before {
+  content: '\00ab';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  left: -20px;
+  transition: 0.5s;
+}
+
+button.hoverButtonleft:hover span {
+  padding-left: 25px;
+}
+
+button.hoverButtonleft:hover span::before {
+  opacity: 1;
+  left: 0;
+}
+
+.transparent {
+    opacity: 0.2;
+}
+
+
+

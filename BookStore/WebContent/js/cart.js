@@ -12,56 +12,14 @@ function clear_cart() {
     	   if (data.code == 200) {
     		    
 	           update_cart_table();
-	           if (("Notification" in window)) {
-	      			if (Notification.permission === "granted") {
-	      		    	// If it's okay let's create a notification
-	      				var notification = new Notification("Cleared Cart...");
-	      		  	}
-	      		  	// Otherwise, we need to ask the user for permission
-	      		  	else if (Notification.permission !== "denied") {
-	      		    	Notification.requestPermission(function (permission) {
-	      		    		// If the user accepts, let's create a notification
-	 		     	 		if (permission === "granted") {
-	 		        			var notification = new Notification("Cleared Cart...");
-	 		      			}
-	 		   	 		});
-	   	  			}
-	      		}
+	           make_notification("Cleared cart");
     	   } else {
-    		   if (("Notification" in window)) {
-          			if (Notification.permission === "granted") {
-          		    	// If it's okay let's create a notification
-          		   	 	var notification = new Notification("Couldn't clear Cart...");
-          		  	}
-          		  	// Otherwise, we need to ask the user for permission
-          		  	else if (Notification.permission !== "denied") {
-          		    	Notification.requestPermission(function (permission) {
-      		    		// If the user accepts, let's create a notification
-	 		     	 		if (permission === "granted") {
-	 		        			var notification = new Notification("Couldn't clear Cart...");
-	 		      			}
-          		    	});
-          		  	}
-          		}
+    		   make_notification("Couldn't clear cart");
     	   }
        },
        error:function(result)
        {
-    	   if (("Notification" in window)) {
-     			if (Notification.permission === "granted") {
-     		    	// If it's okay let's create a notification
-     		   	 	var notification = new Notification("Couldn't clear Cart...");
-     		  	}
-     		  	// Otherwise, we need to ask the user for permission
-     		  	else if (Notification.permission !== "denied") {
-     		    	Notification.requestPermission(function (permission) {
-     		    		// If the user accepts, let's create a notification
-		     	 		if (permission === "granted") {
-		        			var notification = new Notification("Couldn't clear Cart...");
-		      			}
-		   	 		});
-     		  	}
-     		}
+    	   make_notification("Couldn't clear cart");
       	}
     });
 }
@@ -84,8 +42,10 @@ function update_cart_table() {
 		            	$('#cartDiv2').css('display','block');
 		            }
 		            var i = 0;
+		            $("#totalcartprice").html("<b>Total price : </b>" + data.totalcartprice + " $");
+		            $("#totalcartprice2").html("<b>Total price : </b>" + data.totalcartprice + " $");
 		            for (i = 0; i < myRecords.length; i++) {
-		            	myRecords[i].changeAmount = "<div><input type='text' id='"+myRecords[i].isbn+"' class='enterTextbox' value='"+ myRecords[i].copies+ "'/></div>"
+		            	myRecords[i].copies = "<div><input type='text' id='"+myRecords[i].isbn+"' class='enterTextbox' value='"+ myRecords[i].copies+ "' placeholder='Enter copies number' style='width:100%'/></div>"
 		            }
 		            var dynatable = $('#cartTable').dynatable({
 	                    dataset: {
@@ -120,56 +80,14 @@ function add_to_cart(isbn) {
            success: function(data)
            {
         	   if (data.code == 200) {
-        		   if (("Notification" in window)) {
-              			if (Notification.permission === "granted") {
-              		    	// If it's okay let's create a notification
-              		   	 var notification = new Notification("Added To Cart...");
-              		  	}
-              		  	// Otherwise, we need to ask the user for permission
-              		  	else if (Notification.permission !== "denied") {
-              		    	Notification.requestPermission(function (permission) {
-              		      	// If the user accepts, let's create a notification
-          		     	 		if (permission === "granted") {
-          		        			var notification = new Notification("Added To Cart...");
-          		      			}
-          		   	 		});
-        	  			}
-              		}
+        		   make_notification("Added to cart...");
         	   } else {
-        		   if (("Notification" in window)) {
-	              		if (Notification.permission === "granted") {
-	              		    // If it's okay let's create a notification
-	              		    var notification = new Notification("Couldn't add to cart...");
-	              		  }
-	              		  // Otherwise, we need to ask the user for permission
-	              		  else if (Notification.permission !== "denied") {
-	              		    Notification.requestPermission(function (permission) {
-		              		      // If the user accepts, let's create a notification
-	              		     	 if (permission === "granted") {
-	              		        	var notification = new Notification("Couldn't add to cart...");
-	              		      	}
-              		   	 	});
-	              		 }
-        	   		}
+        		   make_notification("Couldn't add to cart...");
         	   }
            },
            error:function(result)
         {
-        	   if (("Notification" in window)) {
-              		if (Notification.permission === "granted") {
-              		    // If it's okay let's create a notification
-              		    var notification = new Notification("Couldn't add to cart...");
-              		  }
-              		  // Otherwise, we need to ask the user for permission
-              		  else if (Notification.permission !== "denied") {
-              		    Notification.requestPermission(function (permission) {
-	              		      // If the user accepts, let's create a notification
-              		     	 if (permission === "granted") {
-              		        	var notification = new Notification("Couldn't add to cart...");
-              		      	}
-         		   	 	});
-              		 }
-   	   		}
+        	   make_notification("Couldn't add to cart...");
        	}
          });
 };
@@ -185,56 +103,35 @@ function modify_cart(isbn, amount) {
            success: function(data)
            {
         	   if (data.code == 200) {
-        		   if (("Notification" in window)) {
-              			if (Notification.permission === "granted") {
-              		    	// If it's okay let's create a notification
-              		   	 var notification = new Notification("Modified in Cart...");
-              		  	}
-              		  	// Otherwise, we need to ask the user for permission
-              		  	else if (Notification.permission !== "denied") {
-              		    	Notification.requestPermission(function (permission) {
-              		      	// If the user accepts, let's create a notification
-          		     	 		if (permission === "granted") {
-          		        			var notification = new Notification("Modified in Cart...");
-          		      			}
-          		   	 		});
-        	  			}
-              		}
+        		   make_notification("Modified Cart...");
         	   } else {
-        		   if (("Notification" in window)) {
-	              		if (Notification.permission === "granted") {
-	              		    // If it's okay let's create a notification
-	              		    var notification = new Notification("Couldn't modify cart...");
-	              		  }
-	              		  // Otherwise, we need to ask the user for permission
-	              		  else if (Notification.permission !== "denied") {
-	              		    Notification.requestPermission(function (permission) {
-		              		      // If the user accepts, let's create a notification
-	              		     	 if (permission === "granted") {
-	              		        	var notification = new Notification("Couldn't modify cart...");
-	              		      	}
-              		   	 	});
-	              		 }
-        	   		}
+        		   make_notification("Couldn't modify cart...");
         	   }
            },
            error:function(result)
         {
-        	   if (("Notification" in window)) {
-              		if (Notification.permission === "granted") {
-              		    // If it's okay let's create a notification
-              		    var notification = new Notification("Couldn't modify cart...");
-              		  }
-              		  // Otherwise, we need to ask the user for permission
-              		  else if (Notification.permission !== "denied") {
-              		    Notification.requestPermission(function (permission) {
-	              		      // If the user accepts, let's create a notification
-              		     	 if (permission === "granted") {
-              		        	var notification = new Notification("Couldn't modify cart...");
-              		      	}
-         		   	 	});
-              		 }
-   	   		}
+        	   make_notification("Couldn't modify cart...");
        	}
      });
 };
+function make_notification(message) {
+	if (("Notification" in window)) {
+		if (Notification.permission === "granted") {
+		    // If it's okay let's create a notification
+		    var notification = new Notification(message);
+		}  else if (Notification.permission !== "denied") {
+		    Notification.requestPermission(function (permission) {
+	  		      // If the user accepts, let's create a notification
+		     	 if (permission === "granted") {
+		        	var notification = new Notification(message);
+		      	} else {
+		      		alert(message);
+		      	}
+	   	 	});
+		 } else {
+			 alert(message);
+		 }
+	} else {
+		alert(message);
+	}
+}

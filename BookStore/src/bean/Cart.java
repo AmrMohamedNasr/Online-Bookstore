@@ -31,6 +31,16 @@ public class Cart {
 			}
 		}
 	}
+	public void update_prices() {
+		for (int i = 0; i < items.size(); i++) {
+			int isbn = items.get(i).getBook().getIsbn();
+			items.get(i).update_item();
+			if (items.get(i).getBook() == null) {
+				map.remove(isbn);
+				items.remove(items.get(i));
+			}
+		}
+	}
 	public boolean hasBook(int isbn) {
 		return map.containsKey(isbn);
 	}

@@ -6,6 +6,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -31,23 +33,75 @@ public class BookServlet extends HttpServlet {
     public BookServlet() {
         super();
     }
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    @SuppressWarnings("unchecked")
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-    	String isbn = request.getParameter("isbn");
-    	String title = request.getParameter("title");
-        String publicationDate = request.getParameter("date");
-        String price = request.getParameter("price");
-        String category = request.getParameter("category");
-        String publisher = request.getParameter("publisher");
-        String author = request.getParameter("authors");
+    	String isbn = request.getParameter("queries[isbn]");
+    	String title = request.getParameter("queries[title]");
+        String publicationDate = request.getParameter("queries[date]");
+        String price1 = request.getParameter("queries[price1]");
+        String price2 = request.getParameter("queries[price2]");
+        String category = request.getParameter("queries[category]");
+        String publisher = request.getParameter("queries[publisher]");
+        String author = request.getParameter("queries[authors]");
+        String pageS = request.getParameter("page");
+        String perPageS = request.getParameter("perPage");
+        String offsetS = request.getParameter("offset");
+        int page = 0,perPage = 0,offset = 0;
+        if (pageS != null) {
+        	page = Integer.parseInt(pageS);
+        }
+        if (perPageS != null) {
+        	perPage = Integer.parseInt(perPageS);
+        }
+        if (offsetS != null) {
+        	offset = Integer.parseInt(offsetS);
+        }
+        Float pr1 = null, pr2 = null;
         JSONObject jsonResp = new JSONObject();
+        JSONArray empArr = new JSONArray();
+        jsonResp.put("queryRecordCount", 0);
+        jsonResp.put("totalRecordCount", BookDataDAO.total_record());
+        jsonResp.put("records", empArr);
     	int code = 200;
     	String message = "";
-    	Integer iIsbn, iPrice;
+    	Integer iIsbn;
     	List<List<Author>> authors = null;
     	List<Publisher> pubs = null;
     	List<Category> categories = null;
     	Date date;
+    	if (price1 == null || price1.trim().isEmpty()) {
+    		pr1 = null;
+    	} else {
+    		try {
+    			pr1 = Float.parseFloat(price1);
+    		} catch (NumberFormatException e) {
+    			code = 400;
+        		message = "Invalid Price , enter a number please.";
+        		jsonResp.put("code", code);
+                jsonResp.put("message", message);
+                response.setContentType("application/json");
+                response.getWriter().write(jsonResp.toJSONString());
+                response.getWriter().close();
+                return;
+    		}
+    	}
+    	if (price2 == null || price2.trim().isEmpty()) {
+    		pr2 = null;
+    	} else {
+    		try {
+    			pr2 = Float.parseFloat(price2);
+    		} catch (NumberFormatException e) {
+    			code = 400;
+        		message = "Invalid Price , enter a number please.";
+        		jsonResp.put("code", code);
+                jsonResp.put("message", message);
+                response.setContentType("application/json");
+                response.getWriter().write(jsonResp.toJSONString());
+                response.getWriter().close();
+                return;
+    		}
+    	}
     	if (isbn == null || isbn.trim().isEmpty()) {
     		iIsbn = null;
     	} else {
@@ -75,38 +129,33 @@ public class BookServlet extends HttpServlet {
 				utilDate = new SimpleDateFormat("MM/dd/yyyy").parse(publicationDate);
 				date = new Date(utilDate.getTime());
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				date = null;
 			}	
-    	}
-    	if (price == null || price.trim().isEmpty()) {
-    		iPrice = null;
-    	} else {
-    		if (!isInteger(price)) {
-    			code = 400;
-        		message = "Invalid Price , enter a number please.";
-        		jsonResp.put("code", code);
-                jsonResp.put("message", message);
-                response.setContentType("application/json");
-                response.getWriter().write(jsonResp.toJSONString());
-                response.getWriter().close();
-                return;
-    		} else {
-    			iPrice = Integer.parseInt(price);
-    		}
     	}
     	if (category == null || category.trim().isEmpty()) {
     		categories = null;
     	} else {
     		Category cat = new Category(null, category);
     		categories = CategoryDataDAO.searchCategory(cat);
+    		if (categories.isEmpty()) {
+    			response.setContentType("application/json");
+                response.getWriter().write(jsonResp.toJSONString());
+                response.getWriter().close();
+                return;
+    		}
     	}
     	if (publisher == null || publisher.trim().isEmpty()) {
     		pubs = null;
     	} else {
     		Publisher pub = new Publisher(null, publisher, null, null);
     		pubs = PublisherDataDAO.searchPublisher(pub);
+    		if (pubs.isEmpty()) {
+    			response.setContentType("application/json");
+                response.getWriter().write(jsonResp.toJSONString());
+                response.getWriter().close();
+                return;
+    		}
     	}
     	if (author == null || author.trim().isEmpty()) {
     		authors = null;
@@ -118,8 +167,10 @@ public class BookServlet extends HttpServlet {
     			authors.add(AuthorDataDAO.searchAuthor(aut));
     		}
     	}
-    	Book searchBook = new Book(iIsbn, title, date, null, iPrice, null, null, null);
-    	List<Book> books = BookDataDAO.selectBookQuery(searchBook, authors, categories, pubs);
+    	Book searchBook = new Book(iIsbn, title, date, null, pr1, null, null, null);
+    	AtomicInteger queryCount = new AtomicInteger(0);
+    	List<Book> books = BookDataDAO.selectBookQuery(searchBook, pr1, pr2, authors, categories, pubs,
+    			perPage, offset, queryCount);
     	JSONArray array = new JSONArray();
     	for (int i = 0;books != null && i < books.size(); i++) {
     		JSONObject obj = new JSONObject();
@@ -129,14 +180,15 @@ public class BookServlet extends HttpServlet {
     		obj.put("price", books.get(i).getPrice());
     		obj.put("category", CategoryDataDAO.getCategoryName(books.get(i).getCid()));
     		obj.put("publisher", PublisherDataDAO.getPublisherName(books.get(i).getPid()));
+    		obj.put("addToCart", "<button onclick='add_to_cart("+books.get(i).getIsbn() +")' >Add to Cart</button>");
     		array.add(obj);
     	}
     	code = 200;
     	message = "Success";
-    	
     	jsonResp.put("code", code);
         jsonResp.put("message", message);
-        jsonResp.put("values", array);
+        jsonResp.put("records", array);
+        jsonResp.put("queryRecordCount", queryCount.get());
         response.setStatus(200);
         response.setContentType("application/json");
         response.getWriter().write(jsonResp.toJSONString());

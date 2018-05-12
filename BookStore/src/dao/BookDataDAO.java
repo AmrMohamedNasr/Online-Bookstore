@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import bean.Author;
 import bean.Book;
@@ -39,14 +40,14 @@ public class BookDataDAO {
 	      
 	      return null;
    }
-	public static List<Book> selectBookQuery(Book book, List<List<Author>> authors, List<Category> cids, List<Publisher> pids) {
+	public static List<Book> selectBookQuery(Book book, Float pr1, Float pr2, List<List<Author>> authors, List<Category> cids, List<Publisher> pids,
+			int limit, int offset, AtomicInteger queryCount) {
 		try {
 			Connection connect = ConnectionProvider.getCon();
 			boolean sauthor = authors != null && !authors.isEmpty();
 			boolean scategory = cids != null && !cids.isEmpty();
 			boolean spublisher = pids != null && !pids.isEmpty();
-			StringBuilder sb2 = new StringBuilder("SELECT Distinct ISBN, Title,PublicationDate,Threshold,"
-					+ "Price,CopiesNumber,CID,PID From ");
+			StringBuilder sb2 = new StringBuilder();
 			if (sauthor) {
 				sb2.append("(Book natural join AuthoredBy natural join Author) ");
 			} else {
@@ -86,12 +87,20 @@ public class BookDataDAO {
 				sb.append((int)book.getThreshold());
 				prev_cond = true;
 			}
-			if (book.getPrice() != null) {
+			if (pr1 != null) {
 				if (prev_cond) {
 					sb.append(" and ");
 				}
-				sb.append("price = ");
-				sb.append((int)book.getPrice());
+				sb.append("price >= ");
+				sb.append(pr1);
+				prev_cond = true;
+			}
+			if (pr2 != null) {
+				if (prev_cond) {
+					sb.append(" and ");
+				}
+				sb.append("price <= ");
+				sb.append(pr2);
 				prev_cond = true;
 			}
 			if (book.getCopiesNumber() != null) {
@@ -166,8 +175,19 @@ public class BookDataDAO {
 			if (!sb.toString().equals(" where ")) {
 				sb2.append(sb);
 			}
-			ResultSet set = connect.createStatement().executeQuery(sb2.toString());
+			StringBuilder sb3 = new StringBuilder("Select count(DISTINCT ISBN) From ");
+			sb3.append(sb2);
+			if (limit != 0) {
+				sb2.append(" limit " + limit);
+			}
+			sb2.append(" offset " + offset);
+			ResultSet set = connect.createStatement().executeQuery("SELECT Distinct ISBN, "
+					+ "Title,PublicationDate,Threshold,"
+					+ "Price,CopiesNumber,CID,PID From "+ sb2.toString());
 			List<Book> books = new ArrayList<Book> ();
+			ResultSet set2 = connect.createStatement().executeQuery(sb3.toString());
+			set2.next();
+			queryCount.set(set2.getInt(1));
 			while (set.next()) {
 				books.add(new Book(set));
 			}
@@ -177,7 +197,18 @@ public class BookDataDAO {
 		}
 		return null;	
 	}
-		
+	public static int total_record() {
+		try {
+			Connection connect = ConnectionProvider.getCon();
+			ResultSet set2 = connect.createStatement().executeQuery(
+					"Select count(*) From Book");
+			set2.next();
+			return set2.getInt(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
 	public static String updateBook (Book oldBook, Book book, List<Author> oldAuthors, List<Author> newAuthors) {
 		try {	
 			Connection connect = ConnectionProvider.getCon();
@@ -219,7 +250,7 @@ public class BookDataDAO {
 					sb.append(" , ");
 				}
 				sb.append("price = ");
-				sb.append((int)book.getPrice());
+				sb.append(book.getPrice());
 				prev_cond = true;
 			}
 			if (book.getCopiesNumber() != null) {
@@ -270,7 +301,7 @@ public class BookDataDAO {
 			   ps.setString(2, book.getTitle());
 			   ps.setDate(3, book.getPublicationDate());
 			   ps.setInt(4, book.getThreshold());
-			   ps.setInt(5, book.getPrice());
+			   ps.setFloat(5, book.getPrice());
 			   ps.setInt(6, book.getCopiesNumber());
 			   ps.setInt(7, book.getCid());
 			   ps.setInt(8, book.getPid());
