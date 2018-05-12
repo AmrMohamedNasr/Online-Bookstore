@@ -165,9 +165,9 @@ public class BookServlet extends HttpServlet {
     		authors = null;
     	} else {
     		authors = new ArrayList<List<Author>> ();
-    		String[] authorNames = author.split("\\r?\\n");
+    		String[] authorNames = author.split(";");
     		for (int i = 0; i < authorNames.length; i++) {
-    			Author aut = new Author(null, authorNames[i]);
+    			Author aut = new Author(null, authorNames[i].trim());
     			authors.add(AuthorDataDAO.searchAuthor(aut));
     		}
     	}

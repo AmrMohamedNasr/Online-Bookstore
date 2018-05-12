@@ -166,7 +166,7 @@
 		});
 		$('#iauthor').autocomplete({
 			source:function(request, response) {
-				var tok = request.term.substring(request.term.lastIndexOf("\n") + 1);
+				var tok = request.term.substring(request.term.lastIndexOf(";") + 1);
 					if(tok.length != 0) {
 					$.ajax({
 	                    url: "auto",
@@ -185,7 +185,7 @@
 			select:function(event, data) {
 				event.preventDefault();
 				var tok = $('#iauthor').val();
-				tok = tok.substring(0, tok.lastIndexOf("\n") + 1);
+				tok = tok.substring(0, tok.lastIndexOf(";") + 1);
 				var s = "";
                 if (typeof data == "undefined") {
                   tok = $('#iauthor').val();
@@ -254,7 +254,7 @@
 	  	<td><label for = "date"><b>Publication Date : </b></label></td>
 	  	<td><input type="text" id="datepicker" name="date" value= "" placeholder = "Enter Publication Date" style="width:70%"/></td>
 	  	<td><label for="authors"><b>Authors : </b></label></td>
-	  	<td><textarea rows="3" cols="50" id="iauthor"name="authors" form="bookSearchForm" placeholder=" Enter authors"  style="width:70%;resize: none;"></textarea></td>
+	  	<td><textarea rows="3" cols="50" id="iauthor"name="authors" form="bookSearchForm" placeholder="Enter authors names seperated by ;"  style="width:70%;resize: none;"></textarea></td>
 	  	</tr>
 	  	</table>
       </form>
