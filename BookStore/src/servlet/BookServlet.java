@@ -19,12 +19,14 @@ import org.json.simple.JSONObject;
 
 import bean.Author;
 import bean.Book;
+import bean.Cart;
 import bean.Category;
 import bean.Publisher;
 import dao.AuthorDataDAO;
 import dao.BookDataDAO;
 import dao.CategoryDataDAO;
 import dao.PublisherDataDAO;
+import utils.AppUtils;
 
 @WebServlet("/book")
 public class BookServlet extends HttpServlet {
@@ -47,6 +49,8 @@ public class BookServlet extends HttpServlet {
         String pageS = request.getParameter("page");
         String perPageS = request.getParameter("perPage");
         String offsetS = request.getParameter("offset");
+        StringBuilder sort_attr = new StringBuilder();
+        handle_sort_attr_parsing(request, sort_attr);
         int page = 0,perPage = 0,offset = 0;
         if (pageS != null) {
         	page = Integer.parseInt(pageS);
@@ -170,8 +174,9 @@ public class BookServlet extends HttpServlet {
     	Book searchBook = new Book(iIsbn, title, date, null, pr1, null, null, null);
     	AtomicInteger queryCount = new AtomicInteger(0);
     	List<Book> books = BookDataDAO.selectBookQuery(searchBook, pr1, pr2, authors, categories, pubs,
-    			perPage, offset, queryCount);
+    			perPage, offset, queryCount, sort_attr.toString().isEmpty()?null:sort_attr.toString());
     	JSONArray array = new JSONArray();
+    	Cart userCart = AppUtils.getCart(request.getSession());
     	for (int i = 0;books != null && i < books.size(); i++) {
     		JSONObject obj = new JSONObject();
     		obj.put("isbn", books.get(i).getIsbn());
@@ -180,7 +185,14 @@ public class BookServlet extends HttpServlet {
     		obj.put("price", books.get(i).getPrice());
     		obj.put("category", CategoryDataDAO.getCategoryName(books.get(i).getCid()));
     		obj.put("publisher", PublisherDataDAO.getPublisherName(books.get(i).getPid()));
-    		obj.put("addToCart", "<button onclick='add_to_cart("+books.get(i).getIsbn() +")' >Add to Cart</button>");
+    		obj.put("inStock", books.get(i).getCopiesNumber());
+    		if (!userCart.hasBook(books.get(i).getIsbn())) {
+    			obj.put("addToCart",
+					"<button onclick='add_to_cart("+books.get(i).getIsbn() +")' >Add to Cart</button>");
+    		} else {
+    			obj.put("addToCart", 
+					"<button onclick='modify_in_cart("+books.get(i).getIsbn() +")' style='background-color:#006400'>Modify Cart</button>");
+    		}
     		array.add(obj);
     	}
     	code = 200;
@@ -308,6 +320,25 @@ public class BookServlet extends HttpServlet {
             if(Character.digit(s.charAt(i),radix) < 0) return false;
         }
         return true;
+    }
+    public static void handle_sort_attr_parsing(HttpServletRequest request, StringBuilder sort_builder) {
+    	handle_sort_single_attr("isbn", request.getParameter("sorts[isbn]"), sort_builder);
+    	handle_sort_single_attr("title", request.getParameter("sorts[title]"), sort_builder);
+    	handle_sort_single_attr("price", request.getParameter("sorts[price]"), sort_builder);
+    	handle_sort_single_attr("cid", request.getParameter("sorts[category]"), sort_builder);
+    	handle_sort_single_attr("publicationDate", request.getParameter("sorts[publicationDate]"), sort_builder);
+    	handle_sort_single_attr("pid", request.getParameter("sorts[publisher]"), sort_builder);
+    	handle_sort_single_attr("copiesNumber", request.getParameter("sorts[inStock]"), sort_builder);
+    }
+    public static void handle_sort_single_attr(String attr, String s, StringBuilder sort_builder) {
+    	if (s != null) {
+    		if (sort_builder.length() != 0) {
+    			sort_builder.append(" , ");
+    		}
+    		sort_builder.append(attr);
+    		sort_builder.append(" ");
+    		sort_builder.append(s.equals("1") ? "ASC" : "DESC");
+    	}
     }
 }
 

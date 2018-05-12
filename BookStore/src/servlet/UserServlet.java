@@ -8,6 +8,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import utils.PaymentUtils;
  
 @WebServlet("/user")
 public class UserServlet extends HttpServlet {
@@ -20,7 +22,7 @@ public class UserServlet extends HttpServlet {
    @Override
    protected void doGet(HttpServletRequest request, HttpServletResponse response)
          throws ServletException, IOException {
- 
+	  request.setAttribute("account3", PaymentUtils.get_account3());
       RequestDispatcher dispatcher //
             = this.getServletContext().getRequestDispatcher("/WEB-INF/views/user.jsp");
  

@@ -1,5 +1,6 @@
+var serverUrl = "http://localhost:8080/BookStore"
 $(function() {
-
+	
     var owner = $('#owner');
     var cardNumber = $('#cardNumber');
     var cardNumberField = $('#card-number-field');
@@ -59,10 +60,28 @@ $(function() {
         } else if (Number(curDate.getFullYear()) > Number(cyear.val()) + 2000 || (Number(curDate.getFullYear()) == Number(cyear.val()) + 2000 && Number(curDate.getMonth()) + 1 > Number(cmonth.val()))) {
         	make_notification("Wrong Date");
         } else {
-            // Everything is correct. Add your form submission code here.
-            alert("Everything is correct");
-            //buy_cart();
-            update_cart_table($('#cartDiv1'), $('#cartDiv2'), $('#cartTable'))
+        	data = {owner : owner.val(), cardNumber : cardNumber.val(), ccv : CVV.val(),
+        			cmonth : cmonth.val(), cyear : cyear.val()};
+        	var url = serverUrl  + "/purchase";
+        	$.ajax({
+	           type: "POST",
+	           url: url,
+	           data: data, // serializes the form's elements.
+	           success: function(data)
+	           {
+	        	   if (data.code == 200) {
+	        		   make_notification("Purchased Successfully");
+	        		   update_cart_table($('#cartDiv1'), $('#cartDiv2'), $('#cartTable'));
+	        		   $(location).attr('href',serverUrl + "/user");
+	        	   } else {
+	        		   make_notification(data.message);
+	        	   }
+	           },
+	           error:function(result)
+ 		        {
+ 		        	   make_notification(data.message);
+ 		       	}
+ 		     });
             cardNumber.val("");
             CVV.val("");
             owner.val("");

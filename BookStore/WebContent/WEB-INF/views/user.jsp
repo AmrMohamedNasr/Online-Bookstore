@@ -109,7 +109,7 @@
 			}
 		});
 		$('#cartTable').bind('dynatable:afterProcess', function(e, data) {
-			$( ".enterTextbox" ).keypress(function(e) {
+			$( ".enterTextbox:not(.bound)" ).addClass('bound').keypress(function(e) {
             	if (e.which == 13) {
                     modify_cart($(this).attr('id'), $(this).val());
                     update_cart_table();
@@ -190,6 +190,7 @@
 		    <th>Publication Date</th>
 		    <th>Price</th>
 		    <th>Publisher</th>
+		    <th>In Stock</th>
 		    <th>Add To Cart</th>
 		    </tr>
 		  </thead>
@@ -220,6 +221,7 @@
 				    <th>ISBN</th>
 				    <th>Title</th>
 				    <th>Price</th>
+				    <th>In Stock</th>
 				    <th>Copies</th>
 				    <th>Total Price</th>
 				    </tr>
@@ -304,6 +306,7 @@
                             <th>Type</th>
                             <th>Card Number</th>
                             <th>Security Code</th>
+                            <th>Account funds</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -311,16 +314,31 @@
                             <td>Visa</td>
                             <td>4716108999716531</td>
                             <td>257</td>
+                            <td>Infinity</td>
                         </tr>
                         <tr>
                             <td>Master Card</td>
                             <td>5281037048916168</td>
                             <td>043</td>
+                            <td>Constant 10000</td>
                         </tr>
                         <tr>
                             <td>American Express</td>
                             <td>342498818630298</td>
                             <td>3156</td>
+                            <td>${account3}</td>
+                        </tr>
+                        <tr>
+                        	<td>American Express</td>
+                        	<td>378282246310005</td>
+                        	<td>233</td>
+                        	<td>0</td>
+                        </tr>
+                        <tr>
+                        	<td>American Express</td>
+                        	<td>371449635398431</td>
+                        	<td>233</td>
+                        	<td>Declined</td>
                         </tr>
                     </tbody>
                 </table>
@@ -336,21 +354,32 @@
 	<div id="EditProfile" class="main" style="display:none">
 	  <h3>Edit Profile</h3><hr>
 	  <form method="POST" id = "profileForm">
-         	<label for="username"><b>Username</b></label><br>
-               <input type="text" name="username" value= "${loginedUser.username}" placeholder = "Enter Username" required/> <br>
-         	<label for="firstName"><b>First Name</b></label><br>
-               <input type="text" name="firstName" value= "${loginedUser.firstName}" placeholder = "Enter First Name" required/> <br>
-
-               <label for="lastName"><b>Last Name</b></label><br>
-               <input type="text" name="lastName" value= "${loginedUser.lastName}" placeholder = "Enter Last Name" required/> <br>
-
-               <label for="email"><b>Email</b></label><br>
-               <input type="text" name="email" value= "${loginedUser.email}" placeholder = "Enter Email" required/><br>
-               
-               <label for="phone"><b>Phone</b></label><br>
-               <input type="text" name="phone" value= "${loginedUser.phone}" placeholder="Enter Phone Number" required/><br>
-               <label for="address"><b>Shipping Address</b></label><br>
-               <input type="text" name="address" value= "${loginedUser.address}" placeholder="Enter Shipping Address" required/>
+	  <table width=100%>
+	  	<tr>
+	  		<td style = "width:30%"><label for="username"><b>Username</b></label></td>
+	  		<td style = "width:70%"><label for="email"><b>Email</b></label></td>
+	  	</tr>
+	  	<tr>
+	  		<td><input type="text" name="username" value= "${loginedUser.username}" placeholder = "Enter Username" required style = "width:70%"/> </td>
+	  		<td><input type="text" name="email" value= "${loginedUser.email}" placeholder = "Enter Email" required style = "width:40%"/></td>
+	  	</tr>
+	  	<tr>
+	  		<td><label for="firstName"><b>First Name</b></label></td>
+	  		<td><label for="phone"><b>Phone</b></label></td>
+	  	</tr>
+	  	<tr>
+	  		<td><input type="text" name="firstName" value= "${loginedUser.firstName}" placeholder = "Enter First Name" required style = "width:70%"/></td>
+	  		<td><input type="text" name="phone" value= "${loginedUser.phone}" placeholder="Enter Phone Number" required style = "width:40%"/></td>
+	  	</tr>
+	  	<tr>
+	  		<td><label for="lastName"><b>Last Name</b></label></td>
+	  		<td><label for="address"><b>Shipping Address</b></label><br></td>
+	  	</tr>
+        <tr>
+        	<td><input type="text" name="lastName" value= "${loginedUser.lastName}" placeholder = "Enter Last Name" required style = "width:70%"/></td>
+        	<td><input type="text" name="address" value= "${loginedUser.address}" placeholder="Enter Shipping Address" required style = "width:40%"/></td>
+        </tr>    
+	</table>
 <br><br>
                   <input type="submit" value= "Edit Profile" />
       </form>

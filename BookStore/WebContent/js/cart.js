@@ -13,6 +13,7 @@ function clear_cart() {
     		    
 	           update_cart_table();
 	           make_notification("Cleared cart");
+	           $('#my-final-table').data('dynatable').process();
     	   } else {
     		   make_notification("Couldn't clear cart");
     	   }
@@ -54,12 +55,6 @@ function update_cart_table() {
 	                }).data('dynatable');
 		            dynatable.settings.dataset.originalRecords = myRecords;
 	                dynatable.process();
-	                $( ".enterTextbox" ).keypress(function(e) {
-	                	if (e.which == 13) {
-	                        modify_cart($(this).attr('id'), $(this).val());
-	                        update_cart_table();
-	                    }
-	              	});
         	   }
            },
            error:function(result)
@@ -72,26 +67,52 @@ function update_cart_table() {
 }
 function add_to_cart(isbn) {
 	var url = serverUrl  + "/cart";
-	var data = {isbn : isbn};
-	$.ajax({
-           type: "POST",
-           url: url,
-           data: data, // serializes the form's elements.
-           success: function(data)
-           {
-        	   if (data.code == 200) {
-        		   make_notification("Added to cart...");
-        	   } else {
-        		   make_notification("Couldn't add to cart...");
-        	   }
-           },
-           error:function(result)
-        {
-        	   make_notification("Couldn't add to cart...");
-       	}
+	var quantity = prompt("Please enter your requested number of copies", 1);
+	if (!isNaN(quantity) && quantity > 0) {
+		var data = {isbn : isbn};
+		$.ajax({
+	           type: "POST",
+	           url: url,
+	           data: data, // serializes the form's elements.
+	           success: function(data)
+	           {
+	        	   if (data.code == 200) {
+	        		   data = {isbn : isbn, amount:quantity};
+	        		   $.ajax({
+        		           type: "POST",
+        		           url: url,
+        		           data: data, // serializes the form's elements.
+        		           success: function(data)
+        		           {
+        		        	   if (data.code == 200) {
+        		        		   make_notification("Added to Cart...");
+        		        		   $('#my-final-table').data('dynatable').process();
+        		        	   } else {
+        		        		   make_notification("Couldn't add to cart..." + data.message);
+        		        	   }
+        		           },
+        		           error:function(result)
+	        		        {
+	        		        	   make_notification("Couldn't add to cart... : " + data.message);
+	        		       	}
+	        		     });
+	        	   } else {
+	        		   make_notification("Couldn't add to cart..." + data.message);
+	        	   }
+	           },
+	           error:function(result)
+	        {
+	        	   make_notification("Couldn't add to cart..." + data.message);
+	       	}
          });
+	}
 };
-
+function modify_in_cart(isbn) {
+	var quantity = prompt("Please enter your requested number of copies", 0);
+	if (!isNaN(quantity)) {
+		modify_cart(isbn, quantity);
+	}
+}
 function modify_cart(isbn, amount) {
 	var url = serverUrl  + "/cart";
 	var data = {isbn : isbn,
@@ -104,13 +125,14 @@ function modify_cart(isbn, amount) {
            {
         	   if (data.code == 200) {
         		   make_notification("Modified Cart...");
+        		   $('#my-final-table').data('dynatable').process();
         	   } else {
-        		   make_notification("Couldn't modify cart...");
+        		   make_notification("Couldn't modify cart..." + data.message);
         	   }
            },
            error:function(result)
         {
-        	   make_notification("Couldn't modify cart...");
+        	   make_notification("Couldn't modify cart..." + data.message);
        	}
      });
 };

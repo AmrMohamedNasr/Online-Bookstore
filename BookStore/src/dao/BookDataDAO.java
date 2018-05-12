@@ -41,7 +41,7 @@ public class BookDataDAO {
 	      return null;
    }
 	public static List<Book> selectBookQuery(Book book, Float pr1, Float pr2, List<List<Author>> authors, List<Category> cids, List<Publisher> pids,
-			int limit, int offset, AtomicInteger queryCount) {
+			int limit, int offset, AtomicInteger queryCount, String sort_attr) {
 		try {
 			Connection connect = ConnectionProvider.getCon();
 			boolean sauthor = authors != null && !authors.isEmpty();
@@ -177,6 +177,11 @@ public class BookDataDAO {
 			}
 			StringBuilder sb3 = new StringBuilder("Select count(DISTINCT ISBN) From ");
 			sb3.append(sb2);
+			if (sort_attr != null) {
+				sb2.append(" Order by ");;
+				sb2.append(sort_attr);
+				sb2.append(" ");
+			}
 			if (limit != 0) {
 				sb2.append(" limit " + limit);
 			}

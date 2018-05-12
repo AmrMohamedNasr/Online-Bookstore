@@ -24,7 +24,8 @@ public class CartServlet extends HttpServlet {
     public CartServlet() {
         super();
     }
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    @SuppressWarnings("unchecked")
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
     	JSONObject jsonResp = new JSONObject();
     	int code = 200;
@@ -33,7 +34,6 @@ public class CartServlet extends HttpServlet {
     	cart.update_prices();
     	AppUtils.storeCart(request.getSession(), cart);
     	JSONArray array = new JSONArray();
-    	float totalCartPrice = 0;
     	for (int i = 0;cart.getItems() != null && i < cart.getItems().size(); i++) {
     		JSONObject obj = new JSONObject();
     		Book book = cart.getItems().get(i).getBook();
@@ -41,21 +41,22 @@ public class CartServlet extends HttpServlet {
     		obj.put("title", book.getTitle());
     		obj.put("price", book.getPrice());
     		obj.put("copies", cart.getItems().get(i).getQuantity());
+    		obj.put("inStock", book.getCopiesNumber());
     		obj.put("totalPrice", book.getPrice() * cart.getItems().get(i).getQuantity());
-    		totalCartPrice += book.getPrice() * cart.getItems().get(i).getQuantity();
     		array.add(obj);
     	}
     	jsonResp.put("code", code);
         jsonResp.put("message", message);
         jsonResp.put("values", array);
-        jsonResp.put("totalcartprice", totalCartPrice);
+        jsonResp.put("totalcartprice", cart.getTotalPrice());
         response.setStatus(200);
         response.setContentType("application/json");
         response.getWriter().write(jsonResp.toJSONString());
         response.getWriter().close();
     }
     
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) 
+    @SuppressWarnings("unchecked")
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) 
     		throws ServletException, IOException {
     	JSONObject jsonResp = new JSONObject();
     	int code = 200;
@@ -71,7 +72,8 @@ public class CartServlet extends HttpServlet {
         response.getWriter().close();
     }
     
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) 
+    @SuppressWarnings("unchecked")
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) 
     		throws ServletException, IOException {
     	
     	BufferedReader reader = request.getReader();
@@ -88,7 +90,8 @@ public class CartServlet extends HttpServlet {
         response.getWriter().close();
     }
     
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    @SuppressWarnings("unchecked")
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
     	String isbn = request.getParameter("isbn");
     	String amount = request.getParameter("amount");
@@ -117,12 +120,22 @@ public class CartServlet extends HttpServlet {
 	    		Integer iquantity = Integer.parseInt(amount);
 	    		if(!cart.hasBook(iIsbn)) {
 	    			Book b = BookDataDAO.findBook(iIsbn);
-	    			cart.addToCart(b);
-	    			AppUtils.storeCart(request.getSession(), cart);
+	    			if (b.getCopiesNumber() >= iquantity) {
+		    			cart.addToCart(b);
+		    			AppUtils.storeCart(request.getSession(), cart);
+	    			} else {
+	    				code = 400;
+	    				message = "Not enough in stock to satisfy request...";
+	    			}
 	    		}
-	    		cart.changeQuantity(iIsbn, iquantity);
-	    		AppUtils.storeCart(request.getSession(), cart);
-	    		message = "success";
+	    		if (code != 400 && BookDataDAO.findBook(iIsbn).getCopiesNumber() >= iquantity) {
+		    		cart.changeQuantity(iIsbn, iquantity);
+		    		AppUtils.storeCart(request.getSession(), cart);
+		    		message = "success";
+	    		} else {
+	    			code = 400;
+    				message = "Not enough in stock to satisfy request...";
+	    		}
     		}
     	}
     	jsonResp.put("code", code);
