@@ -6,11 +6,11 @@ import java.sql.Timestamp;
 
 public class Purchase {
 	private Integer uid;
-	private Integer isbn;
+	private Long isbn;
 	private Timestamp purchaseDate;
 	private Integer amount;
 	private Float totalPrice;
-	public Purchase(Integer uid, Integer isbn, Timestamp purchaseDate, Integer amount, Float totalPrice) {
+	public Purchase(Integer uid, Long isbn, Timestamp purchaseDate, Integer amount, Float totalPrice) {
 		this.uid = uid;
 		this.isbn = isbn;
 		this.purchaseDate = purchaseDate;
@@ -20,7 +20,7 @@ public class Purchase {
 	public Purchase(ResultSet s) {
 		try {
 			this.uid = s.getInt(1);
-			this.isbn = s.getInt(2);
+			this.isbn = s.getLong(2);
 			this.purchaseDate = s.getTimestamp(3);
 			this.amount = s.getInt(4);
 			this.totalPrice = s.getFloat(5);
@@ -34,10 +34,10 @@ public class Purchase {
 	public void setUid(Integer uid) {
 		this.uid = uid;
 	}
-	public Integer getIsbn() {
+	public Long getIsbn() {
 		return isbn;
 	}
-	public void setIsbn(Integer isbn) {
+	public void setIsbn(Long isbn) {
 		this.isbn = isbn;
 	}
 	public Timestamp getPurchaseDate() {

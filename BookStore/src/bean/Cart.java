@@ -7,12 +7,12 @@ import java.util.Map;
 
 public class Cart {
 	private List<CartItem> items;
-	private Map<Integer, CartItem> map;
-	private float totalPrice;
+	private Map<Long, CartItem> map;
+	private Float totalPrice;
 	public Cart() {
 		items = new ArrayList<CartItem>();
-		map = new HashMap<Integer, CartItem> ();
-		totalPrice = 0;
+		map = new HashMap<Long, CartItem> ();
+		totalPrice = 0f;
 	}
 	public void addToCart(Book book) {
 		if (!map.containsKey(book.getIsbn())) {
@@ -23,7 +23,7 @@ public class Cart {
 		}
 	}
 	
-	public void changeQuantity(int isbn, int quantity) {
+	public void changeQuantity(Long isbn, Integer quantity) {
 		if (map.containsKey(isbn)) {
 			CartItem item = map.get(isbn);
 			if (quantity > 0) {
@@ -37,9 +37,9 @@ public class Cart {
 		}
 	}
 	public void update_prices() {
-		totalPrice = 0;
+		totalPrice = 0f;
 		for (int i = 0; i < items.size(); i++) {
-			int isbn = items.get(i).getBook().getIsbn();
+			long isbn = items.get(i).getBook().getIsbn();
 			items.get(i).update_item();
 			totalPrice += items.get(i).getQuantity() * items.get(i).getBook().getPrice();
 			if (items.get(i).getBook() == null) {
@@ -48,7 +48,7 @@ public class Cart {
 			}
 		}
 	}
-	public boolean hasBook(int isbn) {
+	public boolean hasBook(Long isbn) {
 		return map.containsKey(isbn);
 	}
 	public List<CartItem> getItems() {
@@ -60,9 +60,9 @@ public class Cart {
 	public void clearCart() {
 		map.clear();
 		items.clear();
-		totalPrice = 0;
+		totalPrice = 0f;
 	}
-	public float getTotalPrice() {
+	public Float getTotalPrice() {
 		return totalPrice;
 	}
 }

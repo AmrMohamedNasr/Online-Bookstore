@@ -18,7 +18,7 @@ public class PurchasesDAO {
 		       "	values(?, ?, ?, ?);");  
 		   
 		   ps.setInt(1, pur.getUid());
-		   ps.setInt(2, pur.getIsbn());
+		   ps.setLong(2, pur.getIsbn());
 		   ps.setInt(3, pur.getAmount());
 		   ps.setFloat(4, pur.getTotalPrice());
 		   ps.executeUpdate(); 

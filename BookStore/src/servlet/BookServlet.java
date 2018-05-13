@@ -71,7 +71,7 @@ public class BookServlet extends HttpServlet {
         jsonResp.put("records", empArr);
     	int code = 200;
     	String message = "";
-    	Integer iIsbn;
+    	Long iIsbn;
     	List<List<Author>> authors = null;
     	List<Publisher> pubs = null;
     	List<Category> categories = null;
@@ -121,7 +121,7 @@ public class BookServlet extends HttpServlet {
                 response.getWriter().close();
                 return;
     		} else {
-    			iIsbn = Integer.parseInt(isbn);
+    			iIsbn = Long.parseLong(isbn);
     		}
     	}
     	if (title == null || title.trim().isEmpty()) {

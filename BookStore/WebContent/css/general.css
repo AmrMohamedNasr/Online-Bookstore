@@ -125,3 +125,24 @@ button.hoverButtonleft:hover span::before {
 :-ms-input-placeholder {  
    text-align: center; 
 }
+#bookTabs .ui-state-active {
+	background: #5ba63c !important;
+	border-color: #006a72 !important;
+}
+#orderTabs .ui-state-active {
+	background: #5ba63c !important;
+	border-color: #006a72 !important;
+}
+#categoryTabs .ui-state-active {
+	background: #5ba63c !important;
+	border-color: #006a72 !important;
+}
+#publisherTabs .ui-state-active {
+	background: #5ba63c !important;
+	border-color: #006a72 !important;
+}
+#authorTabs .ui-state-active {
+	background: #5ba63c !important;
+	border-color: #006a72 !important;
+}
+

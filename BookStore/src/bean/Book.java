@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 
 public class Book {
-	private Integer isbn;
+	private Long isbn;
 	private String title;
 	private Date publicationDate;
 	private Integer threshold;
@@ -15,7 +15,7 @@ public class Book {
 	private Integer copiesNumber;
 	private Integer cid;
 	private Integer pid;
-	public Book(Integer isbn, String title, Date publicationDate, Integer threshold,
+	public Book(Long isbn, String title, Date publicationDate, Integer threshold,
 			Float price, Integer copies, Integer cid, Integer pid) {
 		this.isbn = isbn;
 		this.title = title;
@@ -30,7 +30,7 @@ public class Book {
 		try {
 			GregorianCalendar calender = new GregorianCalendar();
 			calender.setLenient(true);
-			this.isbn = set.getInt(1);
+			this.isbn = set.getLong(1);
 			this.title = set.getString(2);
 			java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(set.getString(3));
 			this.publicationDate = new Date(utilDate.getTime());
@@ -49,11 +49,11 @@ public class Book {
 		
 	}
 
-	public Integer getIsbn() {
+	public Long getIsbn() {
 		return isbn;
 	}
 
-	public void setIsbn(Integer isbn) {
+	public void setIsbn(Long isbn) {
 		this.isbn = isbn;
 	}
 

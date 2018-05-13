@@ -103,20 +103,27 @@ public class CartServlet extends HttpServlet {
         		message = "Missing or bad ISBN in request...";
     	} else if (amount == null) {
     		Cart cart = AppUtils.getCart(request.getSession());
-    		Integer iIsbn = Integer.parseInt(isbn);
+    		Long iIsbn = Long.parseLong(isbn);
     		if(!cart.hasBook(iIsbn)) {
     			Book b = BookDataDAO.findBook(iIsbn);
-    			cart.addToCart(b);
-    			AppUtils.storeCart(request.getSession(), cart);
+    			if (b.getCopiesNumber() < 1) {
+    				code = 400;
+    				message = "Not enough in stock to satisfy request...";
+    			} else {
+	    			cart.addToCart(b);
+	    			AppUtils.storeCart(request.getSession(), cart);
+	    			message = "success";
+    			}
+    		} else {
+    			message = "success";
     		}
-    		message = "success";
     	} else {
     		if (!isInteger(amount)) {
     			code = 400;
         		message = "Bad amount in request...";
     		} else {
 				Cart cart = AppUtils.getCart(request.getSession());
-	    		Integer iIsbn = Integer.parseInt(isbn);
+	    		Long iIsbn = Long.parseLong(isbn);
 	    		Integer iquantity = Integer.parseInt(amount);
 	    		if(!cart.hasBook(iIsbn)) {
 	    			Book b = BookDataDAO.findBook(iIsbn);

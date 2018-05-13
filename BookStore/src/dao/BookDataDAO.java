@@ -18,13 +18,13 @@ public class BookDataDAO {
 	
 	static final String[] attributes = {"ISBN", "Title", "PublicationDate", "Threshold", "Price", "CopiesNumber",
 			"cid", "pid"};
-	public static Book findBook(Integer isbn) {
+	public static Book findBook(Long isbn) {
 		   try{  
 			   Connection con= ConnectionProvider.getCon();     
 			   PreparedStatement ps=con.prepareStatement(  
 			       "select * from Book where isbn=?");  
 			   
-			   ps.setInt(1, isbn);  
+			   ps.setLong(1, isbn);  
 			   ResultSet rs=ps.executeQuery(); 
 			   
 			   if(rs.next()) {
@@ -72,7 +72,6 @@ public class BookDataDAO {
 			boolean prev_cond = false;
 			if (book.getIsbn() != null) {
 				sb.append("ISBN = ? ");
-				iOptions.add(book.getIsbn());
 				prev_cond = true;
 			}
 			if (book.getCopiesNumber() != null) {
@@ -218,11 +217,16 @@ public class BookDataDAO {
 			PreparedStatement ps2 = connect.prepareStatement(sb3.toString());
 			int i = 0;
 			int ia = 0;
-			for (i = 0; i < iOptions.size(); i++) {
-				ps1.setInt(i+1, iOptions.get(i));
-				ps2.setInt(i+1, iOptions.get(i));
+			if (book.getIsbn() != null) {
+				ps1.setLong(ia + 1, book.getIsbn());
+				ps2.setLong(ia + 1, book.getIsbn());
+				ia++;
 			}
-			ia = i;
+			for (i = 0; i < iOptions.size(); i++) {
+				ps1.setInt(ia + i + 1, iOptions.get(i));
+				ps2.setInt(ia + i + 1, iOptions.get(i));
+			}
+			ia += i;
 			for (i = 0; i < fOptions.size(); i++) {
 				ps1.setFloat(ia + i + 1, fOptions.get(i));
 				ps2.setFloat(ia + i + 1, fOptions.get(i));
@@ -297,7 +301,7 @@ public class BookDataDAO {
 			boolean prev_cond = false;
 			if (book.getIsbn() != null) {
 				sb.append("ISBN = ");
-				sb.append((int)book.getIsbn());
+				sb.append(book.getIsbn());
 				prev_cond = true;
 			}
 			if (book.getTitle() != null) {
@@ -359,7 +363,7 @@ public class BookDataDAO {
 				prev_cond = true;
 			}
 			sb.append("WHERE ISBN = ");
-			sb.append((int)oldBook.getIsbn());
+			sb.append(oldBook.getIsbn());
 			connect.createStatement().executeUpdate(sb.toString());
 			return null;
 		} catch (SQLException ex) {
@@ -378,7 +382,7 @@ public class BookDataDAO {
 			       "	values(?, ?, ?, ?, ?, ?,\n" + 
 			       "		?, ?);");  
 			   
-			   ps.setInt(1, book.getIsbn());
+			   ps.setLong(1, book.getIsbn());
 			   ps.setString(2, book.getTitle());
 			   ps.setDate(3, book.getPublicationDate());
 			   ps.setInt(4, book.getThreshold());
