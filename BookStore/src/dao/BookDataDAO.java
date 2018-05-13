@@ -12,6 +12,7 @@ import bean.Author;
 import bean.Book;
 import bean.Category;
 import bean.Publisher;
+import bean.Purchase;
 import provider.ConnectionProvider;
 
 public class BookDataDAO {
@@ -294,86 +295,140 @@ public class BookDataDAO {
 		}
 		return 0;
 	}
-	public static String updateBook (Book oldBook, Book book, List<Author> oldAuthors, List<Author> newAuthors) {
-		try {	
-			Connection connect = ConnectionProvider.getConnection();
+	public static String updateBook (Book oldBook, Book book, List<Author> oldAuthors,
+			List<Author> newAuthors) throws SQLException {
+		Connection connect = ConnectionProvider.getConnection();
+		try {
 			StringBuilder sb = new StringBuilder("UPDATE Book SET ");
 			boolean prev_cond = false;
+			List<Integer> iOptions = new ArrayList<Integer>();
 			if (book.getIsbn() != null) {
-				sb.append("ISBN = ");
-				sb.append(book.getIsbn());
+				sb.append("ISBN = ?");
 				prev_cond = true;
 			}
 			if (book.getTitle() != null) {
 				if (prev_cond) {
 					sb.append(" , ");
 				}
-				sb.append("title = \'");
-				sb.append(book.getTitle());
-				sb.append("\'");
+				sb.append("title = ?");
 				prev_cond = true;
 			}
 			if (book.getPublicationDate() != null) {
 				if (prev_cond) {
 					sb.append(" , ");
 				}
-				sb.append("PublicationDate = \'");
-				sb.append(book.getPublicationDate().toString());
-				sb.append("\'");
-				prev_cond = true;
-			}
-			if (book.getThreshold() != null) {
-				if (prev_cond) {
-					sb.append(" , ");
-				}
-				sb.append("threshold = ");
-				sb.append((int)book.getThreshold());
+				sb.append("PublicationDate = ? ");
 				prev_cond = true;
 			}
 			if (book.getPrice() != null) {
 				if (prev_cond) {
 					sb.append(" , ");
 				}
-				sb.append("price = ");
-				sb.append(book.getPrice());
+				sb.append("price = ? ");
+				prev_cond = true;
+			}
+			if (book.getThreshold() != null) {
+				if (prev_cond) {
+					sb.append(" , ");
+				}
+				sb.append("threshold = ? ");
+				iOptions.add(book.getThreshold());
 				prev_cond = true;
 			}
 			if (book.getCopiesNumber() != null) {
 				if (prev_cond) {
 					sb.append(" , ");
 				}
-				sb.append("CopiesNumber = ");
-				sb.append((int)book.getCopiesNumber());
+				sb.append("CopiesNumber = ? ");
+				iOptions.add(book.getCopiesNumber());
 				prev_cond = true;
 			}
 			if (book.getCid() != null) {
 				if (prev_cond) {
 					sb.append(" , ");
 				}
-				sb.append("Cid = ");
-				sb.append((int)book.getCid());
+				sb.append("Cid = ? ");
+				iOptions.add(book.getCid());
 				prev_cond = true;
 			}
 			if (book.getPid() != null) {
 				if (prev_cond) {
 					sb.append(" , ");
 				}
-				sb.append("pid = ");
-				sb.append((int)book.getPid());
+				sb.append("pid = ? ");
+				iOptions.add(book.getPid());
 				prev_cond = true;
 			}
-			sb.append("WHERE ISBN = ");
-			sb.append(oldBook.getIsbn());
-			connect.createStatement().executeUpdate(sb.toString());
+			sb.append("WHERE ISBN = ?");
+			PreparedStatement ps = connect.prepareStatement(sb.toString());
+			int ia = 1;
+			if (book.getIsbn() != null) {
+				ps.setLong(ia, book.getIsbn());
+				ia++;
+			}
+			if (book.getTitle() != null) {
+				ps.setString(ia, book.getTitle());
+				ia++;
+			}
+			if (book.getPublicationDate() != null) {
+				ps.setDate(ia, book.getPublicationDate());
+				ia++;
+			}
+			if (book.getPrice() != null) {
+				ps.setFloat(ia, book.getPrice());
+				ia++;
+			}
+			int i;
+			for (i = 0; i < iOptions.size(); i++) {
+				ps.setInt(ia + i + 1, iOptions.get(i));
+			}
+			ia+=i;
+			ps.setLong(ia, oldBook.getIsbn());
+			connect.setAutoCommit(false);
+			ps.executeUpdate();
+			for (int j = 0; j < oldAuthors.size(); j++) {
+				deleteAuthorConnection(oldBook.getIsbn(), oldAuthors.get(j).getAid(), connect);
+			}
+			for (int j = 0; j < newAuthors.size(); j++) {
+				addAuthorConnection(book.getIsbn(), newAuthors.get(j).getAid(), connect);
+			}
+			connect.commit();
+			connect.setAutoCommit(true);
 			return null;
 		} catch (SQLException ex) {
-			   return ex.getMessage();
+			connect.rollback();
+			connect.setAutoCommit(true);
+			return ex.getMessage();
 	   }catch(Exception e){
 		   e.printStackTrace();
-	   }  
+		   connect.rollback();
+	   }   finally {
+		   connect.setAutoCommit(true);
+	   }
 	   return "Unknown Error";
 	}
-
+	private static String deleteAuthorConnection(Long isbn, Integer aid, Connection con) {
+		try {
+			PreparedStatement ps = con.prepareStatement("Delete From AuthoredBy where isbn = ? and aid = ?");
+			ps.setLong(1, isbn);
+			ps.setInt(2, aid);
+			ps.executeUpdate();
+			return null;
+		} catch (Exception e) {
+			return e.getMessage();
+		}
+	}
+	private static String addAuthorConnection(Long isbn, Integer aid, Connection con) {
+		try {
+			PreparedStatement ps = con.prepareStatement("Insert Into AuthoredBy(ISBN, AID) values( ? ,?)");
+			ps.setLong(1, isbn);
+			ps.setInt(2, aid);
+			ps.executeUpdate();
+			return null;
+		} catch (Exception e) {
+			return e.getMessage();
+		}
+	}
 	public static String addBook(Book book) {
 		try{  
 			   Connection con= ConnectionProvider.getConnection();     
