@@ -13,7 +13,7 @@ import provider.ConnectionProvider;
 public class PublisherDataDAO {
 	public static String getPublisherName(int pid) {
 		try{  
-			   Connection con= ConnectionProvider.getCon();     
+			   Connection con= ConnectionProvider.getConnection();     
 			   PreparedStatement ps=con.prepareStatement(  
 			       "Select * From Publisher where pid = ?;");  
 			   
@@ -32,9 +32,30 @@ public class PublisherDataDAO {
 		   }  
 		   return null;
 	}
+	public static Integer getPublisherId(String publisherName) {
+		try{  
+			   Connection con= ConnectionProvider.getConnection();     
+			   PreparedStatement ps=con.prepareStatement(  
+			       "Select * From Publisher where name = ?;");  
+			   
+			   ps.setString(1, publisherName);
+			   ResultSet set = ps.executeQuery(); 
+			   if (set.next()) {
+				   Publisher pub = new Publisher(set);
+				   return pub.getPid();
+			   } else {
+				   return null;
+			   }
+		   } catch (SQLException ex) {
+			   return null;
+		   }catch(Exception e){
+			   e.printStackTrace();
+		   }  
+		   return null;
+	}
 	public static List<Publisher> searchPublisher(Publisher publisher) {
 		try{  
-			   Connection con= ConnectionProvider.getCon(); 
+			   Connection con= ConnectionProvider.getConnection(); 
 			   boolean name = publisher.getName() != null,
 					  address = publisher.getAddress() != null,
 					  phone = publisher.getPhone() != null;
@@ -89,7 +110,7 @@ public class PublisherDataDAO {
 	}
 	public static List<Publisher> searchFirstMatchPublisher(Publisher publisher) {
 		try{  
-			   Connection con= ConnectionProvider.getCon(); 
+			   Connection con= ConnectionProvider.getConnection(); 
 			   boolean name = publisher.getName() != null,
 					  address = publisher.getAddress() != null,
 					  phone = publisher.getPhone() != null;
@@ -143,7 +164,7 @@ public class PublisherDataDAO {
 	}
 	public static String addPublisher(Publisher publisher) {
 		try{  
-			   Connection con= ConnectionProvider.getCon();     
+			   Connection con= ConnectionProvider.getConnection();     
 			   PreparedStatement ps=con.prepareStatement(  
 			       "insert into Publisher (Name, Phone, Address)\n" + 
 			       "	values(?, ?, ?);");  

@@ -20,7 +20,7 @@ public class BookDataDAO {
 			"cid", "pid"};
 	public static Book findBook(Long isbn) {
 		   try{  
-			   Connection con= ConnectionProvider.getCon();     
+			   Connection con= ConnectionProvider.getConnection();     
 			   PreparedStatement ps=con.prepareStatement(  
 			       "select * from Book where isbn=?");  
 			   
@@ -43,7 +43,7 @@ public class BookDataDAO {
 	public static List<Book> selectBookQuery(Book book, Float pr1, Float pr2, List<List<Author>> authors, List<Category> cids, List<Publisher> pids,
 			int limit, int offset, AtomicInteger queryCount, String sort_attr, boolean hasStock) {
 		try {
-			Connection connect = ConnectionProvider.getCon();
+			Connection connect = ConnectionProvider.getConnection();
 			boolean sauthor = authors != null && !authors.isEmpty();
 			boolean scategory = cids != null && !cids.isEmpty();
 			boolean spublisher = pids != null && !pids.isEmpty();
@@ -264,7 +264,7 @@ public class BookDataDAO {
 	}
 	public static List<Book> searchFirstMatchBook(String title) {
 		try{  
-		   Connection con= ConnectionProvider.getCon();     
+		   Connection con= ConnectionProvider.getConnection();     
 		   PreparedStatement ps=con.prepareStatement(  
 		       "select * from Book where title like ? limit 10");  
 		   List<Book> books = new ArrayList<Book> ();
@@ -284,7 +284,7 @@ public class BookDataDAO {
 	}
 	public static int total_record() {
 		try {
-			Connection connect = ConnectionProvider.getCon();
+			Connection connect = ConnectionProvider.getConnection();
 			ResultSet set2 = connect.createStatement().executeQuery(
 					"Select count(*) From Book");
 			set2.next();
@@ -296,7 +296,7 @@ public class BookDataDAO {
 	}
 	public static String updateBook (Book oldBook, Book book, List<Author> oldAuthors, List<Author> newAuthors) {
 		try {	
-			Connection connect = ConnectionProvider.getCon();
+			Connection connect = ConnectionProvider.getConnection();
 			StringBuilder sb = new StringBuilder("UPDATE Book SET ");
 			boolean prev_cond = false;
 			if (book.getIsbn() != null) {
@@ -376,7 +376,7 @@ public class BookDataDAO {
 
 	public static String addBook(Book book) {
 		try{  
-			   Connection con= ConnectionProvider.getCon();     
+			   Connection con= ConnectionProvider.getConnection();     
 			   PreparedStatement ps=con.prepareStatement(  
 			       "insert into User (ISBN, Title, PublicationDate, Threshold, Price, CopiesNumber, Cid, Pid)\n" + 
 			       "	values(?, ?, ?, ?, ?, ?,\n" + 

@@ -13,7 +13,7 @@ import provider.ConnectionProvider;
 public class CategoryDataDAO {
 	public static String getCategoryName(int cid) {
 		try{  
-			   Connection con= ConnectionProvider.getCon();     
+			   Connection con= ConnectionProvider.getConnection();     
 			   PreparedStatement ps=con.prepareStatement(  
 			       "Select * From Category where cid = ?;");  
 			   
@@ -32,9 +32,30 @@ public class CategoryDataDAO {
 		   }  
 		   return null;
 	}
+	public static Integer getCategoryId(String category) {
+		try{  
+			   Connection con= ConnectionProvider.getConnection();     
+			   PreparedStatement ps=con.prepareStatement(  
+			       "Select * From Category where name = ?;");  
+			   
+			   ps.setString(1, category);
+			   ResultSet set = ps.executeQuery(); 
+			   if (set.next()) {
+				   Category pub = new Category(set);
+				   return pub.getCid();
+			   } else {
+				   return null;
+			   }
+		   } catch (SQLException ex) {
+			   return null;
+		   }catch(Exception e){
+			   e.printStackTrace();
+		   }  
+		   return null;
+	}
 	public static List<Category> searchCategory(Category category) {
 		try{  
-			Connection con= ConnectionProvider.getCon(); 
+			Connection con= ConnectionProvider.getConnection(); 
 			PreparedStatement ps=con.prepareStatement("Select * From Category where name like ?");  
 			   ps.setString(1, "%" + category.getName() + "%"); 
 			   
@@ -53,7 +74,7 @@ public class CategoryDataDAO {
 	}
 	public static List<Category> getFirstMatchCategory(Category category) {
 		try{  
-			Connection con= ConnectionProvider.getCon(); 
+			Connection con= ConnectionProvider.getConnection(); 
 			PreparedStatement ps=con.prepareStatement("Select * From Category where name like ? limit 10");  
 			   ps.setString(1, category.getName() + "%"); 
 			   
@@ -72,7 +93,7 @@ public class CategoryDataDAO {
 	}
 	public static String addCategory(Category category) {
 		try{  
-			   Connection con= ConnectionProvider.getCon();     
+			   Connection con= ConnectionProvider.getConnection();     
 			   PreparedStatement ps=con.prepareStatement(  
 			       "insert into Category (Name)\n" + 
 			       "	values(?);");  

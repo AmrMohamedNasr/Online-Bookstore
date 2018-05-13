@@ -32,7 +32,7 @@ public class PurchasesDAO {
 	   return "Unknown Error";
 	}
 	public static String handleCart(Cart cart, int uid) throws SQLException {
-		Connection con = ConnectionProvider.getCon();
+		Connection con = ConnectionProvider.getConnection();
 		String res = null;
 		try {
 			con.setAutoCommit(false);

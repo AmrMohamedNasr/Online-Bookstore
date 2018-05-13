@@ -15,7 +15,7 @@ public class ConnectionProvider {
 		}
 	}  
 	  
-	public static Connection getCon(){
+	public static Connection getConnection(){
 		if (con == null) {
 			try{  
 				Class.forName(Provider.DRIVER);  

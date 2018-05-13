@@ -14,7 +14,7 @@ public class AuthorDataDAO {
 	
 	public static List<Author> searchAuthor(Author author) {
 		try{  
-			   Connection con= ConnectionProvider.getCon(); 
+			   Connection con= ConnectionProvider.getConnection(); 
 			   
 			   
 			   PreparedStatement ps = con.prepareStatement("Select * From Author where name like ? ");
@@ -32,9 +32,29 @@ public class AuthorDataDAO {
 		   }  
 		   return null;
 	}
+	public static Integer getAuthorId (String authorName) {
+		try{  
+			   Connection con= ConnectionProvider.getConnection();     
+			   PreparedStatement ps=con.prepareStatement(  
+			       "Select * From Author where name = ?;");     
+			   ps.setString(1, authorName);
+			   ResultSet set = ps.executeQuery(); 
+			   if (set.next()) {
+				   Author author = new Author(set);
+				   return author.getAid();
+			   } else {
+				   return null;
+			   }
+		   } catch (SQLException ex) {
+			   return null;
+		   }catch(Exception e){
+			   e.printStackTrace();
+		   }  
+		   return null;
+	}
 	public static List<Author> searchFirstMatchAuthor(Author author) {
 		try{  
-			   Connection con= ConnectionProvider.getCon(); 
+			   Connection con= ConnectionProvider.getConnection(); 
 			   PreparedStatement ps = con.prepareStatement("Select * From Author where name like ? limit 10");
 			   ps.setString(1, author.getName() + "%"); 
 			   ResultSet set = ps.executeQuery(); 
@@ -52,7 +72,7 @@ public class AuthorDataDAO {
 	}
 	public static String addAuthor(Author author) {
 		try{  
-			   Connection con= ConnectionProvider.getCon();     
+			   Connection con= ConnectionProvider.getConnection();     
 			   PreparedStatement ps=con.prepareStatement(  
 			       "insert into Author (Name)\n" + 
 			       "	values(?);");  

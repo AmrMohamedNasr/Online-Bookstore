@@ -16,7 +16,7 @@ public class UserDataDAO {
 	   // Find a User by userName and password.
 	   public static User findUser(String userName, String password) {
 		   try{  
-			   Connection con= ConnectionProvider.getCon();     
+			   Connection con= ConnectionProvider.getConnection();     
 			   PreparedStatement ps=con.prepareStatement(  
 			       "select * from User where username=? and password=?");  
 			   
@@ -37,10 +37,32 @@ public class UserDataDAO {
 	      
 	      return null;
 	   }
-	   
+	   public static User findUserByEmail(String userName, String email) {
+		   try{  
+			   Connection con= ConnectionProvider.getConnection();     
+			   PreparedStatement ps=con.prepareStatement(  
+			       "select * from User where username=? and email=?");  
+			   
+			   ps.setString(1, userName);
+			   ps.setString(2, email);     
+			   ResultSet rs=ps.executeQuery(); 
+			   
+			   if(rs.next()) {
+				   User u = new User(rs);
+				   return u;
+			   } else {
+				   return null;
+			   }
+			                 
+		   }catch(Exception e){
+			   e.printStackTrace();
+		   }  
+	      
+	      return null;
+	   }
 	   public static String addUser(User user) {
 		   try{  
-			   Connection con= ConnectionProvider.getCon();     
+			   Connection con= ConnectionProvider.getConnection();     
 			   PreparedStatement ps=con.prepareStatement(  
 			       "insert into User (username, password, email, firstName, lastName, phone, address, manager)\n" + 
 			       "	values(?, ?, ?, ?, ?, ?,\n" + 
@@ -66,7 +88,7 @@ public class UserDataDAO {
 	   
 	   public static String updateUser(User user) {
 		   try{  
-			   Connection con= ConnectionProvider.getCon();
+			   Connection con= ConnectionProvider.getConnection();
 			   StringBuilder sql = new StringBuilder("Update User Set ");
 			   List<String> values = new ArrayList<String> ();
 			   values.add(user.getUsername());
