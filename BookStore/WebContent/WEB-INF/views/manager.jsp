@@ -17,6 +17,7 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript" src="js/dialog.js" ></script>
 <script type="text/javascript" src="js/manager_page.js"></script>
+<script type="text/javascript" src="js/book_requests.js"></script>
 </head>
 <body>
 <jsp:include page="_menu.jsp"></jsp:include>
@@ -41,9 +42,49 @@
 		  <ul>
 		    <li><a href="#book-tabs-1">Search Books</a></li>
 		    <li><a href="#book-tabs-2">Add Book</a></li>
-		    <li><a href="#book-tabs-3">Edit Book</a></li>
+		    <li><a id = "edit-book-link" href="#book-tabs-3">Edit Book</a></li>
 		  </ul>
 		  <div id="book-tabs-1">
+		  	<form id = "bookSearchForm">
+			  	<table width = 100%>
+				  	<tr>
+					  	<td style="width:20%"><label for="isbn"><b>ISBN : </b></label></td>
+					  	<td style="width:30%"><input type="text" id = "iisbn" name="isbn" value= "" placeholder="Enter ISBN" style="width:70%"/></td>
+					  	<td style="width:20%"><label for = "title"><b>Title : </b></label></td>
+					  	<td style="width:30%"><input class = "autotitle" type="text" id = "ititle" name="title" value= "" placeholder = "Enter Title" style="width:70%"/></td>
+				  	</tr>
+				  	<tr>
+					  	<td><label for = "price1"><b>Lowest Price : </b></label></td>
+					  	<td><input type="text" id = "iprice1" name="price1" value= "" placeholder= "Enter Lowest Price" style="width:70%"/></td>
+					  	<td><label for = "price2"><b>Highest Price : </b></label></td>
+					  	<td><input type="text" id = "iprice2" name="price2" value= "" placeholder= "Enter Highest Price" style="width:70%"/></td>
+				  	</tr>
+				  	<tr>
+					  	<td><label for="category"><b>Category : </b></label></td>
+					  	<td><input type="text" class = "autocategory"id = "icategory" name="category" value= "" placeholder = "Enter Category" style="width:70%"/></td>
+					  	<td><label for="publisher"><b>Publisher : </b></label></td>
+					  	<td><input type="text" class = "autopublisher"id = "ipublisher" name="publisher" value= "" placeholder="Enter publisher name" style="width:70%"/> </td>
+				  	</tr>
+				  	<tr>
+					  	<td><label for = "date"><b>Publication Date : </b></label></td>
+					  	<td><input type="text" class ="mydatepickers" id="ipubdate" name="date" value= "" placeholder = "Enter Publication Date" style="width:70%"/></td>
+					  	<td><label for="authors"><b>Authors : </b></label></td>
+					  	<td><textarea class = "autoauthor" rows="3" cols="50" id="iauthor"name="authors" form="bookSearchForm" placeholder="Enter authors names seperated by ;"  style="width:70%;resize: none;"></textarea></td>
+				  	</tr>
+				  	<tr>
+					  	<td><label for = "threshold1"><b>Min Threshold : </b></label></td>
+					  	<td><input type="text" id = "ithreshold1" name="threshold1" value= "" placeholder= "Enter Min Threshold" style="width:70%"/></td>
+					  	<td><label for = "threshold2"><b>Max Threshold : </b></label></td>
+					  	<td><input type="text" id = "ithreshold2" name="threshold2" value= "" placeholder= "Enter Max Threshold" style="width:70%"/></td>
+				  	</tr>
+				  	<tr>
+					  	<td><label for = "copies1"><b>Min Copies Number : </b></label></td>
+					  	<td><input type="text" id = "icopies1" name="copies1" value= "" placeholder= "Enter Min Number" style="width:70%"/></td>
+					  	<td><label for = "copies2"><b>Max Copies Number : </b></label></td>
+					  	<td><input type="text" id = "icopies2" name="copies2" value= "" placeholder= "Enter Max Number" style="width:70%"/></td>
+				  	</tr>
+			  	</table>
+	      	</form>
 		  	<table id="books-table">
 			  <thead>
 			  	<tr>
@@ -63,12 +104,79 @@
 			</table>
 		  </div>
 		  <div id="book-tabs-2">
-		    <p>Morbi tincidunt, dui sit amet facilisis feugiat, odio metus gravida ante, ut pharetra massa metus id nunc. Duis scelerisque molestie turpis. Sed fringilla, massa eget luctus malesuada, metus eros molestie lectus, ut tempus eros massa ut dolor. Aenean aliquet fringilla sem. Suspendisse sed ligula in ligula suscipit aliquam. Praesent in eros vestibulum mi adipiscing adipiscing. Morbi facilisis. Curabitur ornare consequat nunc. Aenean vel metus. Ut posuere viverra nulla. Aliquam erat volutpat. Pellentesque convallis. Maecenas feugiat, tellus pellentesque pretium posuere, felis lorem euismod felis, eu ornare leo nisi vel felis. Mauris consectetur tortor et purus.</p>
+		  		<form id = "bookAddForm">
+			  	<table width = 100%>
+				  	<tr>
+					  	<td style="width:20%"><label for="isbn"><b>ISBN : </b></label></td>
+					  	<td style="width:30%"><input type="text" id = "aisbn" name="isbn" value= "" placeholder="Enter ISBN" style="width:70%"/></td>
+					  	<td style="width:20%"><label for = "title"><b>Title : </b></label></td>
+					  	<td style="width:30%"><input class = "autotitle" type="text" id = "atitle" name="title" value= "" placeholder = "Enter Title" style="width:70%"/></td>
+				  	</tr>
+				  	<tr>
+					  	<td><label for = "price"><b>Price : </b></label></td>
+					  	<td><input type="text" id = "aprice" name="price" value= "" placeholder= "Enter Price" style="width:70%"/></td>
+					  	<td><label for = "threshold"><b>Threshold : </b></label></td>
+					  	<td><input type="text" id = "athreshold" name="threshold" value= "" placeholder= "Enter Threshold" style="width:70%"/></td>
+				  	</tr>
+				  	<tr>
+					  	<td><label for="category"><b>Category : </b></label></td>
+					  	<td><input type="text" class = "autocategory"id = "acategory" name="category" value= "" placeholder = "Enter Category" style="width:70%"/></td>
+					  	<td><label for="publisher"><b>Publisher : </b></label></td>
+					  	<td><input type="text" class = "autopublisher"id = "apublisher" name="publisher" value= "" placeholder="Enter publisher name" style="width:70%"/> </td>
+				  	</tr>
+				  	<tr>
+					  	<td><label for = "date"><b>Publication Date : </b></label></td>
+					  	<td><input type="text" class = "mydatepickers" id="apubdate" name="date" value= "" placeholder = "Enter Publication Date" style="width:70%"/></td>
+					  	<td><label for="authors"><b>Authors : </b></label></td>
+					  	<td><textarea class = "autoauthor" rows="3" cols="50" id="aauthor"name="authors" form="bookAddForm" placeholder="Enter authors names seperated by ;"  style="width:70%;resize: none;"></textarea></td>
+				  	</tr>
+				  	<tr>
+					  	<td><label for = "copies"><b>Available Copies : </b></label></td>
+					  	<td><input type="text" id = "acopies" name="copies" value= "" placeholder= "Enter Copies Number" style="width:70%"/></td>
+				  	</tr>
+			  	</table>
+			  	<input type="submit" value="Add Book"/>
+	      	</form>
+	      	<p id="addBookResult"></p>
 		  </div>
 		  <div id="book-tabs-3">
-		    <p>Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. Vestibulum non ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce sodales. Quisque eu urna vel enim commodo pellentesque. Praesent eu risus hendrerit ligula tempus pretium. Curabitur lorem enim, pretium nec, feugiat nec, luctus a, lacus.</p>
-		    <p>Duis cursus. Maecenas ligula eros, blandit nec, pharetra at, semper at, magna. Nullam ac lacus. Nulla facilisi. Praesent viverra justo vitae neque. Praesent blandit adipiscing velit. Suspendisse potenti. Donec mattis, pede vel pharetra blandit, magna ligula faucibus eros, id euismod lacus dolor eget odio. Nam scelerisque. Donec non libero sed nulla mattis commodo. Ut sagittis. Donec nisi lectus, feugiat porttitor, tempor ac, tempor vitae, pede. Aenean vehicula velit eu tellus interdum rutrum. Maecenas commodo. Pellentesque nec elit. Fusce in lacus. Vivamus a libero vitae lectus hendrerit hendrerit.</p>
-		  </div>
+	      	<form id = "bookEditForm">
+			  	<table width = 100%>
+				  	<tr>
+					  	<td style="width:20%"><label for="oldisbn"><b>Old ISBN : </b></label></td>
+					  	<td style="width:30%"><input type="text" id = "eoldisbn" name="oldisbn" value= "" placeholder="Enter Old ISBN" style="width:70%"/></td>
+				  		<td style="width:20%"><label for="isbn"><b>ISBN : </b></label></td>
+					  	<td style="width:30%"><input type="text" id = "enewisbn" name="isbn" value= "" placeholder="Enter New ISBN" style="width:70%"/></td>
+				  	</tr>
+				  	<tr>
+					  	<td style="width:20%"><label for = "title"><b>Title : </b></label></td>
+					  	<td style="width:30%"><input class = "autotitle" type="text" id = "etitle" name="title" value= "" placeholder = "Enter Title" style="width:70%"/></td>
+					  	<td><label for = "price"><b>Price : </b></label></td>
+					  	<td><input type="text" id = "eprice" name="price" value= "" placeholder= "Enter Price" style="width:70%"/></td>
+				  	</tr>
+				  	<tr>
+					  	<td><label for="category"><b>Category : </b></label></td>
+					  	<td><input type="text" class = "autocategory"id = "ecategory" name="category" value= "" placeholder = "Enter Category" style="width:70%"/></td>
+					  	<td><label for="publisher"><b>Publisher : </b></label></td>
+					  	<td><input type="text" class = "autopublisher"id = "epublisher" name="publisher" value= "" placeholder="Enter publisher name" style="width:70%"/> </td>
+				  	</tr>
+				  	<tr>
+					  	<td><label for = "date"><b>Publication Date : </b></label></td>
+					  	<td><input type="text" class = "mydatepickers" id="epubdate" name="date" value= "" placeholder = "Enter Publication Date" style="width:70%"/></td>
+					  	<td><label for="authors"><b>Authors : </b></label></td>
+					  	<td><textarea class = "autoauthor" rows="3" cols="50" id="eauthor"name="authors" form="bookEditForm" placeholder="Enter authors names seperated by ;"  style="width:70%;resize: none;"></textarea></td>
+				  	</tr>
+				  	<tr>
+				  		<td><label for = "threshold"><b>Threshold : </b></label></td>
+					  	<td><input type="text" id = "ethreshold" name="threshold" value= "" placeholder= "Enter Threshold" style="width:70%"/></td>
+					  	<td><label for = "copies"><b>Available Copies : </b></label></td>
+					  	<td><input type="text" id = "ecopies" name="copies" value= "" placeholder= "Enter Copies Number" style="width:70%"/></td>
+				  	</tr>
+			  	</table>
+			  	<input type="submit" value="Edit Book"/>
+	      	</form>
+	      	<p id="editBookResult"></p>
+	      </div>
 		</div>
 	</div>
 	<div id="Authors" class="main" style='display:none'>

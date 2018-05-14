@@ -32,6 +32,27 @@ public class AuthorDataDAO {
 		   }  
 		   return null;
 	}
+	public static List<Author> getAuthorsOfBook(Long isbn) {
+		try{  
+		   Connection con= ConnectionProvider.getConnection(); 
+		   
+		   
+		   PreparedStatement ps = con.prepareStatement("Select AID, Name From (Author Natural Join "
+		   		+ "AuthoredBy) where isbn = ? ");
+		   ps.setLong(1, isbn); 
+		   ResultSet set = ps.executeQuery(); 
+		   List<Author> pubs = new ArrayList<Author>();
+		   while(set.next()) {
+			   pubs.add(new Author(set));
+		   }
+		   return pubs;
+	   } catch (SQLException ex) {
+		   return null;
+	   }catch(Exception e){
+		   e.printStackTrace();
+	   }  
+	   return null;
+	}
 	public static Integer getAuthorId (String authorName) {
 		try{  
 			   Connection con= ConnectionProvider.getConnection();     
@@ -42,6 +63,26 @@ public class AuthorDataDAO {
 			   if (set.next()) {
 				   Author author = new Author(set);
 				   return author.getAid();
+			   } else {
+				   return null;
+			   }
+		   } catch (SQLException ex) {
+			   return null;
+		   }catch(Exception e){
+			   e.printStackTrace();
+		   }  
+		   return null;
+	}
+	public static Author getAuthorByName (String authorName) {
+		try{  
+			   Connection con= ConnectionProvider.getConnection();     
+			   PreparedStatement ps=con.prepareStatement(  
+			       "Select * From Author where name = ?;");     
+			   ps.setString(1, authorName);
+			   ResultSet set = ps.executeQuery(); 
+			   if (set.next()) {
+				   Author author = new Author(set);
+				   return author;
 			   } else {
 				   return null;
 			   }

@@ -12,10 +12,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONObject;
 
+
 import bean.Cart;
 import bean.User;
 import dao.PurchasesDAO;
 import utils.AppUtils;
+import utils.ParseUtils;
 import utils.PaymentUtils;
 import utils.PaymentUtils.BANK_RESPONSE;
 
@@ -45,7 +47,8 @@ public class PurchaseServlet extends HttpServlet {
     	int code =  200;
     	JSONObject jsonResp = new JSONObject();
     	try {
-    		if (isNumeric(card) && isNumeric(cvv) && isNumeric(cmonth) && isNumeric(cyear)
+    		if (ParseUtils.isNumeric(card) && ParseUtils.isNumeric(cvv) &&
+    				ParseUtils.isNumeric(cmonth) && ParseUtils.isNumeric(cyear)
     				&& validExp(cyear, cmonth) && luhnCheck(card)) {
 	    		BANK_RESPONSE bresp = PaymentUtils.authorize(card, cvv, fund);
 	    		if (bresp == BANK_RESPONSE.APPROVED) {
@@ -105,10 +108,6 @@ public class PurchaseServlet extends HttpServlet {
 		}
 		return (s1 + s2) % 10 == 0;
 	}
-    public static boolean isNumeric(String str)
-    {
-      return str != null && str.matches("^[0-9]+$");
-    }
     public static boolean validExp(String year, String month) {
     	LocalDateTime date = LocalDateTime.now();
     	int cm = date.getMonthValue();

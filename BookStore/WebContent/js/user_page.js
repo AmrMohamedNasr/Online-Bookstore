@@ -1,5 +1,9 @@
 var serverUrl = "http://localhost:8080/BookStore";
 $(function() {
+	$("#promptDialog").dialog({
+        autoOpen: false,
+        modal: true
+	});
 	$("#userNav").attr('class','active');
 	$("#profileForm").submit(function(e) {
 		edit_user();

@@ -12,7 +12,6 @@ import bean.Author;
 import bean.Book;
 import bean.Category;
 import bean.Publisher;
-import bean.Purchase;
 import provider.ConnectionProvider;
 
 public class BookDataDAO {
@@ -43,6 +42,12 @@ public class BookDataDAO {
    }
 	public static List<Book> selectBookQuery(Book book, Float pr1, Float pr2, List<List<Author>> authors, List<Category> cids, List<Publisher> pids,
 			int limit, int offset, AtomicInteger queryCount, String sort_attr, boolean hasStock) {
+		return selectBookQuery(book, pr1, pr2, authors, cids, pids,
+				limit, offset, queryCount, sort_attr, null, null, hasStock?1:0, null);
+	}
+	public static List<Book> selectBookQuery(Book book, Float pr1, Float pr2, List<List<Author>> authors, List<Category> cids, List<Publisher> pids,
+			int limit, int offset, AtomicInteger queryCount, String sort_attr,
+			Integer lt, Integer ht, Integer lc, Integer hc) {
 		try {
 			Connection connect = ConnectionProvider.getConnection();
 			boolean sauthor = authors != null && !authors.isEmpty();
@@ -91,6 +96,38 @@ public class BookDataDAO {
 				iOptions.add(book.getThreshold());
 				prev_cond = true;
 			}
+			if (lt != null) {
+				if (prev_cond) {
+					sb.append(" and ");
+				}
+				sb.append(" threshold >= ? ");
+				iOptions.add(lt);
+				prev_cond = true;
+			}
+			if (ht != null) {
+				if (prev_cond) {
+					sb.append(" and ");
+				}
+				sb.append(" threshold <= ? ");
+				iOptions.add(ht);
+				prev_cond = true;
+			}
+			if (lc != null) {
+				if (prev_cond) {
+					sb.append(" and ");
+				}
+				sb.append(" copiesNumber >= ? ");
+				iOptions.add(lc);
+				prev_cond = true;
+			}
+			if (hc != null) {
+				if (prev_cond) {
+					sb.append(" and ");
+				}
+				sb.append(" copiesNumber <= ? ");
+				iOptions.add(hc);
+				prev_cond = true;
+			}
 			if (pr1 != null) {
 				if (prev_cond) {
 					sb.append(" and ");
@@ -119,13 +156,6 @@ public class BookDataDAO {
 					sb.append(" and ");
 				}
 				sb.append("PublicationDate = ? ");
-				prev_cond = true;
-			}
-			if (hasStock) {
-				if (prev_cond) {
-					sb.append(" and ");
-				}
-				sb.append("CopiesNumber > 0 ");
 				prev_cond = true;
 			}
 			if (scategory) {
@@ -202,7 +232,9 @@ public class BookDataDAO {
 			if (limit != 0) {
 				sb2.append(" limit ? ");
 			}
-			sb2.append(" offset ? ");
+			if (offset != 0) {
+				sb2.append(" offset ? ");
+			}
 			StringBuilder sb1 = new StringBuilder("SELECT Distinct ISBN, "
 					+ "Title,PublicationDate,Threshold,"
 					+ "Price,CopiesNumber,Book.CID,Book.PID ");
@@ -248,7 +280,9 @@ public class BookDataDAO {
 				ps1.setInt(ia, limit);
 				ia++;
 			}
-			ps1.setInt(ia, offset);
+			if (offset != 0) {
+				ps1.setInt(ia, offset);
+			}
 			ResultSet set = ps1.executeQuery();
 			List<Book> books = new ArrayList<Book> ();
 			ResultSet set2 = ps2.executeQuery();
@@ -380,17 +414,21 @@ public class BookDataDAO {
 			}
 			int i;
 			for (i = 0; i < iOptions.size(); i++) {
-				ps.setInt(ia + i + 1, iOptions.get(i));
+				ps.setInt(ia + i, iOptions.get(i));
 			}
 			ia+=i;
 			ps.setLong(ia, oldBook.getIsbn());
 			connect.setAutoCommit(false);
-			ps.executeUpdate();
-			for (int j = 0; j < oldAuthors.size(); j++) {
-				deleteAuthorConnection(oldBook.getIsbn(), oldAuthors.get(j).getAid(), connect);
+			if (oldAuthors != null) {
+				for (int j = 0; j < oldAuthors.size(); j++) {
+					deleteAuthorConnection(oldBook.getIsbn(), oldAuthors.get(j).getAid(), connect);
+				}
 			}
-			for (int j = 0; j < newAuthors.size(); j++) {
-				addAuthorConnection(book.getIsbn(), newAuthors.get(j).getAid(), connect);
+			ps.executeUpdate();
+			if (newAuthors != null) {
+				for (int j = 0; j < newAuthors.size(); j++) {
+					addAuthorConnection(book.getIsbn(), newAuthors.get(j).getAid(), connect);
+				}
 			}
 			connect.commit();
 			connect.setAutoCommit(true);
@@ -407,6 +445,7 @@ public class BookDataDAO {
 	   }
 	   return "Unknown Error";
 	}
+	
 	private static String deleteAuthorConnection(Long isbn, Integer aid, Connection con) {
 		try {
 			PreparedStatement ps = con.prepareStatement("Delete From AuthoredBy where isbn = ? and aid = ?");
@@ -429,11 +468,16 @@ public class BookDataDAO {
 			return e.getMessage();
 		}
 	}
-	public static String addBook(Book book) {
+	public static String addBook(Book book) throws SQLException {
+		return addBook(book, null);
+	}
+	public static String addBook(Book book, List<Author> authors) throws SQLException {
+		Connection con= ConnectionProvider.getConnection();
 		try{  
-			   Connection con= ConnectionProvider.getConnection();     
+			   
+			   con.setAutoCommit(false);
 			   PreparedStatement ps=con.prepareStatement(  
-			       "insert into User (ISBN, Title, PublicationDate, Threshold, Price, CopiesNumber, Cid, Pid)\n" + 
+			       "insert into Book (ISBN, Title, PublicationDate, Threshold, Price, CopiesNumber, Cid, Pid)\n" + 
 			       "	values(?, ?, ?, ?, ?, ?,\n" + 
 			       "		?, ?);");  
 			   
@@ -446,12 +490,23 @@ public class BookDataDAO {
 			   ps.setInt(7, book.getCid());
 			   ps.setInt(8, book.getPid());
 			   ps.executeUpdate(); 
+			   if (authors != null) {
+				   for (int i = 0; i < authors.size(); i++) {
+					   BookDataDAO.addAuthorConnection(book.getIsbn(), authors.get(i).getAid(), con);
+				   }
+			   }
+			   con.commit();
+			   con.setAutoCommit(true);
 			   return null;
 		   } catch (SQLException ex) {
+			   con.rollback();
+			   con.setAutoCommit(true);
 			   return ex.getMessage();
 		   }catch(Exception e){
+			   con.rollback();
+			   con.setAutoCommit(true);
 			   e.printStackTrace();
-		   }  
+		   }
 		   return "Unknown Error";
 	}
 }
