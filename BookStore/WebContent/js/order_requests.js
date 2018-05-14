@@ -41,7 +41,7 @@ function confirm_order(isbn, timestamp) {
               make_notification("Confirmed Order..");
               update_order_table();
    	   } else {
-   		   	make_notification("Failed to confirm..");
+   		   	make_notification("Failed to confirm : " + data.message);
    	   }
       },
       error:function(result)

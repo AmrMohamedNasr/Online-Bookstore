@@ -31,6 +31,24 @@ public class OrderDataDAO {
 		   }  
 		   return "Unknown Error";
 	}
+	public static String deleteBookOrder(Long isbn, Timestamp ts) {
+		try{  
+			   Connection con= ConnectionProvider.getConnection();     
+			   PreparedStatement ps=con.prepareStatement(  
+			       "delete from BookOrder where " + 
+			       "	isbn = ? and timeRequested = ?");  
+			   
+			   ps.setLong(1,isbn);
+			   ps.setTimestamp(2, ts);
+			   ps.executeUpdate(); 
+			   return null;
+		   } catch (SQLException ex) {
+			   return ex.getMessage();
+		   }catch(Exception e){
+			   e.printStackTrace();
+		   }  
+		   return "Unknown Error";
+	}
 	public static List<Order> searchBookOrder(Long isbn, Integer q1, Integer q2) {
 		return searchBookOrder(isbn, q1, q2, null, null, 0, 0, null, null);
 	}
@@ -142,5 +160,17 @@ public class OrderDataDAO {
 			   e.printStackTrace();
 		   }  
 		   return null;
+	}
+	public static int total_record() {
+		try {
+			Connection connect = ConnectionProvider.getConnection();
+			ResultSet set2 = connect.createStatement().executeQuery(
+					"Select count(*) From BookOrder");
+			set2.next();
+			return set2.getInt(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
 	}
 }
