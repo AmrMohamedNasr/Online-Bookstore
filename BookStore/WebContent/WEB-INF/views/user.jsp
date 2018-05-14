@@ -73,7 +73,7 @@
       </form>
     <br>
       <div id="searchDiv" style="display:block">
-      <table id="my-final-table">
+      <table id="my-final-table" width=100%>
 		  <thead>
 		  <tr>
 		    <th>ISBN</th>
@@ -83,7 +83,7 @@
 		    <th>Price</th>
 		    <th>Publisher</th>
 		    <th>In Stock</th>
-		    <th>Add To Cart</th>
+		    <th style="width:15%">Add To Cart</th>
 		    </tr>
 		  </thead>
 		  <tbody>
@@ -107,7 +107,7 @@
 		  	</tr>
 		  	</table>
 		  	<p id="totalcartprice"></p>
-		      <table id="cartTable">
+		      <table id="cartTable" width=100%>
 				  <thead>
 				  <tr>
 				    <th>ISBN</th>

@@ -192,7 +192,7 @@ $(function() {
 			    perPageSelect: true
 			  },
 			  inputs: {
-			    queries: $("#icategoryid,#icategoryrname") ,
+			    queries: $("#icategoryid,#icategoryname") ,
 			    sorts: null,
 			    multisort: null,
 			    page: null,

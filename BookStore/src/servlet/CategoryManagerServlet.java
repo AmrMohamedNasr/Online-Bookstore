@@ -14,29 +14,29 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import bean.Author;
-import dao.AuthorDataDAO;
+import bean.Category;
+import dao.CategoryDataDAO;
 import utils.ParseUtils;
 
-@WebServlet("/authormgr")
-public class AuthorManagerServlet extends HttpServlet {
+@WebServlet("/categorymgr")
+public class CategoryManagerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	 
-    public AuthorManagerServlet() {
+    public CategoryManagerServlet() {
         super();
     }
     
     @SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-    	String aid = request.getParameter("queries[aid]");
+    	String cid = request.getParameter("queries[cid]");
         String name = request.getParameter("queries[name]");
         String perPageS = request.getParameter("perPage");
         String offsetS = request.getParameter("offset");
         JSONObject jsonResp = new JSONObject();
         JSONArray empArr = new JSONArray();
         jsonResp.put("queryRecordCount", 0);
-        jsonResp.put("totalRecordCount", AuthorDataDAO.total_record());
+        jsonResp.put("totalRecordCount", CategoryDataDAO.total_record());
         jsonResp.put("records", empArr);
         StringBuilder sort_attr = new StringBuilder();
         handle_sort_attr_parsing(request, sort_attr);
@@ -58,11 +58,11 @@ public class AuthorManagerServlet extends HttpServlet {
     		ParseUtils.doJsonResponse(jsonResp, response, code, message);
             return;
         }
-        Integer iaid;
-        iaid = ParseUtils.IntegerParse(aid, false, error);
-        if (iaid != null && iaid == -1 && error.get()) {
+        Integer icid;
+        icid = ParseUtils.IntegerParse(cid, false, error);
+        if (icid != null && icid == -1 && error.get()) {
         	code = 400;
-    		message = "Invalid aid , enter a number please.";
+    		message = "Invalid cid , enter a number please.";
     		ParseUtils.doJsonResponse(jsonResp, response, code, message);
             return;
         }
@@ -71,18 +71,18 @@ public class AuthorManagerServlet extends HttpServlet {
     	} else {
     		name = name.trim();
     	}
-    	Author searchAut = new Author(iaid, name);
+    	Category searchCat = new Category(icid, name);
     	AtomicInteger queryCount = new AtomicInteger(0);
-    	List<Author> authors = AuthorDataDAO.searchAuthor(searchAut, perPage, offset,
+    	List<Category> authors = CategoryDataDAO.searchCategory(searchCat, perPage, offset,
     			sort_attr.toString().isEmpty()?null:sort_attr.toString(),
     					queryCount);
     	JSONArray array = new JSONArray();
     	for (int i = 0;authors != null && i < authors.size(); i++) {
     		JSONObject obj = new JSONObject();
-    		obj.put("aid", authors.get(i).getAid());
+    		obj.put("cid", authors.get(i).getCid());
     		obj.put("name", authors.get(i).getName());
-			obj.put("editAuthor",
-					"<button onclick='edit_author_info("+authors.get(i).getAid() +")' >Edit Author</button>");
+			obj.put("editCategory",
+					"<button onclick='edit_category_info("+authors.get(i).getCid() +")' >Edit Category</button>");
     		array.add(obj);
     	}
     	code = 200;
@@ -95,18 +95,18 @@ public class AuthorManagerServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-    	String aid = request.getParameter("aid");
+    	String cid = request.getParameter("cid");
         String name = request.getParameter("name");
         String edit = request.getParameter("edit");
         JSONObject jsonResp = new JSONObject();
         String message = "";
         int code = 200;
-        Integer iaid;
+        Integer icid;
         AtomicBoolean error = new AtomicBoolean();
-        iaid = ParseUtils.IntegerParse(aid, false, error);
-        if (iaid != null && iaid == -1 && error.get()) {
+        icid = ParseUtils.IntegerParse(cid, false, error);
+        if (icid != null && icid == -1 && error.get()) {
         	code = 400;
-    		message = "Invalid aid , enter a number please.";
+    		message = "Invalid cid , enter a number please.";
     		ParseUtils.doJsonResponse(jsonResp, response, code, message);
             return;
         }
@@ -116,17 +116,17 @@ public class AuthorManagerServlet extends HttpServlet {
     		name = name.trim();
     	}
         if (edit != null && edit.equals("true")) {
-        	if (name == null || iaid == null) {
+        	if (name == null || icid == null) {
         		code = 400;
-        		message = "Missing Info to modify author.";
+        		message = "Missing Info to modify category.";
         	} else {
-    			Author aut = new Author(iaid, null);
-    			List<Author> existTest = AuthorDataDAO.searchAuthor(aut);
+    			Category aut = new Category(icid, null);
+    			List<Category> existTest = CategoryDataDAO.searchCategory(aut);
     			if ( existTest == null || existTest.isEmpty()) {
     				code = 400;
-            		message = "Invalid AID.";
+            		message = "Invalid CID.";
     			} else {
-    				String res = AuthorDataDAO.updateAuthor(iaid, name);
+    				String res = CategoryDataDAO.updateCategory(icid, name);
     				if (res == null) {
     					code = 200;
     					message = "Edited Successfully";
@@ -139,10 +139,10 @@ public class AuthorManagerServlet extends HttpServlet {
         } else {
         	if (name == null) {
         		code = 400;
-        		message = "Missing attribute for new author.";
+        		message = "Missing attribute for new category.";
         	} else {
-	        	Author author = new Author(null, name);
-	        	String res = AuthorDataDAO.addAuthor(author);
+	        	Category cat = new Category(null, name);
+	        	String res = CategoryDataDAO.addCategory(cat);
 	        	if (res == null) {
 	        		code = 200;
 	        		message = "Added Successfully";
@@ -155,23 +155,8 @@ public class AuthorManagerServlet extends HttpServlet {
         ParseUtils.doJsonResponse(jsonResp, response, code, message);
     }
     
-    public static boolean isInteger(String s) {
-        return isInteger(s,10);
-    }
-
-    public static boolean isInteger(String s, int radix) {
-        if(s.isEmpty()) return false;
-        for(int i = 0; i < s.length(); i++) {
-            if(i == 0 && s.charAt(i) == '-') {
-                if(s.length() == 1) return false;
-                else continue;
-            }
-            if(Character.digit(s.charAt(i),radix) < 0) return false;
-        }
-        return true;
-    }
     public static void handle_sort_attr_parsing(HttpServletRequest request, StringBuilder sort_builder) {
-    	handle_sort_single_attr("aid", request.getParameter("sorts[aid]"), sort_builder);
+    	handle_sort_single_attr("cid", request.getParameter("sorts[cid]"), sort_builder);
     	handle_sort_single_attr("name", request.getParameter("sorts[name]"), sort_builder);
     }
     public static void handle_sort_single_attr(String attr, String s, StringBuilder sort_builder) {

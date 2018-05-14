@@ -14,29 +14,31 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import bean.Author;
-import dao.AuthorDataDAO;
+import bean.Publisher;
+import dao.PublisherDataDAO;
 import utils.ParseUtils;
 
-@WebServlet("/authormgr")
-public class AuthorManagerServlet extends HttpServlet {
+@WebServlet("/publishermgr")
+public class PublisherManagerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	 
-    public AuthorManagerServlet() {
+    public PublisherManagerServlet() {
         super();
     }
     
     @SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-    	String aid = request.getParameter("queries[aid]");
+    	String pid = request.getParameter("queries[pid]");
         String name = request.getParameter("queries[name]");
+        String address = request.getParameter("queries[address]");
+        String phone = request.getParameter("queries[phone]");
         String perPageS = request.getParameter("perPage");
         String offsetS = request.getParameter("offset");
         JSONObject jsonResp = new JSONObject();
         JSONArray empArr = new JSONArray();
         jsonResp.put("queryRecordCount", 0);
-        jsonResp.put("totalRecordCount", AuthorDataDAO.total_record());
+        jsonResp.put("totalRecordCount",PublisherDataDAO.total_record());
         jsonResp.put("records", empArr);
         StringBuilder sort_attr = new StringBuilder();
         handle_sort_attr_parsing(request, sort_attr);
@@ -58,11 +60,11 @@ public class AuthorManagerServlet extends HttpServlet {
     		ParseUtils.doJsonResponse(jsonResp, response, code, message);
             return;
         }
-        Integer iaid;
-        iaid = ParseUtils.IntegerParse(aid, false, error);
-        if (iaid != null && iaid == -1 && error.get()) {
+        Integer ipid;
+        ipid = ParseUtils.IntegerParse(pid, false, error);
+        if (ipid != null && ipid == -1 && error.get()) {
         	code = 400;
-    		message = "Invalid aid , enter a number please.";
+    		message = "Invalid pid , enter a number please.";
     		ParseUtils.doJsonResponse(jsonResp, response, code, message);
             return;
         }
@@ -71,18 +73,30 @@ public class AuthorManagerServlet extends HttpServlet {
     	} else {
     		name = name.trim();
     	}
-    	Author searchAut = new Author(iaid, name);
+    	if (address == null || address.trim().isEmpty()) {
+    		address = null;
+    	} else {
+    		address = address.trim();
+    	}
+    	if (phone == null || phone.trim().isEmpty()) {
+    		phone = null;
+    	} else {
+    		phone = phone.trim();
+    	}
+    	Publisher searchPub = new Publisher(ipid, name, address, phone);
     	AtomicInteger queryCount = new AtomicInteger(0);
-    	List<Author> authors = AuthorDataDAO.searchAuthor(searchAut, perPage, offset,
+    	List<Publisher> publishers = PublisherDataDAO.searchPublisher(searchPub, perPage, offset,
     			sort_attr.toString().isEmpty()?null:sort_attr.toString(),
     					queryCount);
     	JSONArray array = new JSONArray();
-    	for (int i = 0;authors != null && i < authors.size(); i++) {
+    	for (int i = 0;publishers != null && i < publishers.size(); i++) {
     		JSONObject obj = new JSONObject();
-    		obj.put("aid", authors.get(i).getAid());
-    		obj.put("name", authors.get(i).getName());
-			obj.put("editAuthor",
-					"<button onclick='edit_author_info("+authors.get(i).getAid() +")' >Edit Author</button>");
+    		obj.put("pid", publishers.get(i).getPid());
+    		obj.put("name", publishers.get(i).getName());
+    		obj.put("address", publishers.get(i).getAddress());
+    		obj.put("phone", publishers.get(i).getPhone());
+			obj.put("editPublisher",
+					"<button onclick='edit_publisher_info("+publishers.get(i).getPid() +")' >Edit Publisher</button>");
     		array.add(obj);
     	}
     	code = 200;
@@ -95,18 +109,20 @@ public class AuthorManagerServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-    	String aid = request.getParameter("aid");
+    	String pid = request.getParameter("pid");
         String name = request.getParameter("name");
+        String phone = request.getParameter("phone");
+        String address = request.getParameter("address");
         String edit = request.getParameter("edit");
         JSONObject jsonResp = new JSONObject();
         String message = "";
         int code = 200;
-        Integer iaid;
+        Integer ipid;
         AtomicBoolean error = new AtomicBoolean();
-        iaid = ParseUtils.IntegerParse(aid, false, error);
-        if (iaid != null && iaid == -1 && error.get()) {
+        ipid = ParseUtils.IntegerParse(pid, false, error);
+        if (ipid != null && ipid == -1 && error.get()) {
         	code = 400;
-    		message = "Invalid aid , enter a number please.";
+    		message = "Invalid pid , enter a number please.";
     		ParseUtils.doJsonResponse(jsonResp, response, code, message);
             return;
         }
@@ -115,18 +131,35 @@ public class AuthorManagerServlet extends HttpServlet {
     	} else {
     		name = name.trim();
     	}
+    	if (address == null || address.trim().isEmpty()) {
+    		address = null;
+    	} else {
+    		address = address.trim();
+    	}
+    	if (phone == null || phone.trim().isEmpty()) {
+    		phone = null;
+    	} else {
+    		phone = phone.trim();
+    		if (phone.length() > 15 || !isInteger(phone)) {
+    			code = 400;
+        		message = "Invalid phone number , enter a valid phone number please.";
+        		ParseUtils.doJsonResponse(jsonResp, response, code, message);
+                return;
+    		}
+    	}
         if (edit != null && edit.equals("true")) {
-        	if (name == null || iaid == null) {
+        	if (ipid == null) {
         		code = 400;
-        		message = "Missing Info to modify author.";
+        		message = "Missing Info to modify publisher.";
         	} else {
-    			Author aut = new Author(iaid, null);
-    			List<Author> existTest = AuthorDataDAO.searchAuthor(aut);
-    			if ( existTest == null || existTest.isEmpty()) {
+    			Publisher aut = new Publisher(ipid, null, null, null);
+    			List<Publisher> testingEx = PublisherDataDAO.searchPublisher(aut);
+    			if (testingEx == null || testingEx.isEmpty()) {
     				code = 400;
-            		message = "Invalid AID.";
+            		message = "Invalid PID.";
     			} else {
-    				String res = AuthorDataDAO.updateAuthor(iaid, name);
+    				Publisher pub = new Publisher(null, name, address, phone);
+    				String res = PublisherDataDAO.updatePublisher(ipid, pub);
     				if (res == null) {
     					code = 200;
     					message = "Edited Successfully";
@@ -137,12 +170,12 @@ public class AuthorManagerServlet extends HttpServlet {
         		}
         	}
         } else {
-        	if (name == null) {
+        	if (name == null || phone == null || address == null) {
         		code = 400;
         		message = "Missing attribute for new author.";
         	} else {
-	        	Author author = new Author(null, name);
-	        	String res = AuthorDataDAO.addAuthor(author);
+	        	Publisher publisher = new Publisher(null, name, address, phone);
+	        	String res = PublisherDataDAO.addPublisher(publisher);
 	        	if (res == null) {
 	        		code = 200;
 	        		message = "Added Successfully";
@@ -171,8 +204,10 @@ public class AuthorManagerServlet extends HttpServlet {
         return true;
     }
     public static void handle_sort_attr_parsing(HttpServletRequest request, StringBuilder sort_builder) {
-    	handle_sort_single_attr("aid", request.getParameter("sorts[aid]"), sort_builder);
+    	handle_sort_single_attr("pid", request.getParameter("sorts[pid]"), sort_builder);
     	handle_sort_single_attr("name", request.getParameter("sorts[name]"), sort_builder);
+    	handle_sort_single_attr("phone", request.getParameter("sorts[phone]"), sort_builder);
+    	handle_sort_single_attr("address", request.getParameter("sorts[address]"), sort_builder);
     }
     public static void handle_sort_single_attr(String attr, String s, StringBuilder sort_builder) {
     	if (s != null) {

@@ -49,13 +49,11 @@ public class SecurityConfig {
         urlPatterns2.add("/editUser");
         urlPatterns2.add("/purchase");
         urlPatterns2.add("/bookmgr");
-        /*
         urlPatterns2.add("/authormgr");
         urlPatterns2.add("/categorymgr");
         urlPatterns2.add("/ordermgr");
         urlPatterns2.add("/usermgr");
         urlPatterns2.add("/reportmgr");
-        */
         mapConfig.put(ROLE.MANAGER, urlPatterns2);
     }
  

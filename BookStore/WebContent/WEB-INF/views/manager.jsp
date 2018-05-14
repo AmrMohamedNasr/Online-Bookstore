@@ -91,7 +91,7 @@
 				  	</tr>
 			  	</table>
 	      	</form>
-		  	<table id="books-table">
+		  	<table id="books-table" width=100%>
 			  <thead>
 			  	<tr>
 				    <th>ISBN</th>
@@ -102,7 +102,7 @@
 				    <th>Publisher</th>
 				    <th>Number Of Copies</th>
 				    <th>Threshold</th>
-				    <th>Edit Book</th>
+				    <th style="width:15%">Edit Book</th>
 			    </tr>
 			  </thead>
 			  <tbody>
@@ -114,31 +114,31 @@
 			  	<table width = 100%>
 				  	<tr>
 					  	<td style="width:20%"><label for="isbn"><b>ISBN : </b></label></td>
-					  	<td style="width:30%"><input type="text" id = "aisbn" name="isbn" value= "" placeholder="Enter ISBN" style="width:70%"/></td>
+					  	<td style="width:30%"><input type="text" id = "aisbn" name="isbn" value= "" placeholder="Enter ISBN" style="width:70%" required/></td>
 					  	<td style="width:20%"><label for = "title"><b>Title : </b></label></td>
-					  	<td style="width:30%"><input class = "autotitle" type="text" id = "atitle" name="title" value= "" placeholder = "Enter Title" style="width:70%"/></td>
+					  	<td style="width:30%"><input class = "autotitle" type="text" id = "atitle" name="title" value= "" placeholder = "Enter Title" style="width:70%" required/></td>
 				  	</tr>
 				  	<tr>
 					  	<td><label for = "price"><b>Price : </b></label></td>
-					  	<td><input type="text" id = "aprice" name="price" value= "" placeholder= "Enter Price" style="width:70%"/></td>
+					  	<td><input type="text" id = "aprice" name="price" value= "" placeholder= "Enter Price" style="width:70%" required/></td>
 					  	<td><label for = "threshold"><b>Threshold : </b></label></td>
-					  	<td><input type="text" id = "athreshold" name="threshold" value= "" placeholder= "Enter Threshold" style="width:70%"/></td>
+					  	<td><input type="text" id = "athreshold" name="threshold" value= "" placeholder= "Enter Threshold" style="width:70%" required/></td>
 				  	</tr>
 				  	<tr>
 					  	<td><label for="category"><b>Category : </b></label></td>
-					  	<td><input type="text" class = "autocategory"id = "acategory" name="category" value= "" placeholder = "Enter Category" style="width:70%"/></td>
+					  	<td><input type="text" class = "autocategory"id = "acategory" name="category" value= "" placeholder = "Enter Category" style="width:70%" required/></td>
 					  	<td><label for="publisher"><b>Publisher : </b></label></td>
-					  	<td><input type="text" class = "autopublisher"id = "apublisher" name="publisher" value= "" placeholder="Enter publisher name" style="width:70%"/> </td>
+					  	<td><input type="text" class = "autopublisher"id = "apublisher" name="publisher" value= "" placeholder="Enter publisher name" style="width:70%" required/> </td>
 				  	</tr>
 				  	<tr>
 					  	<td><label for = "date"><b>Publication Date : </b></label></td>
-					  	<td><input type="text" class = "mydatepickers" id="apubdate" name="date" value= "" placeholder = "Enter Publication Date" style="width:70%"/></td>
+					  	<td><input type="text" class = "mydatepickers" id="apubdate" name="date" value= "" placeholder = "Enter Publication Date" style="width:70%" required/></td>
 					  	<td><label for="authors"><b>Authors : </b></label></td>
 					  	<td><textarea class = "autoauthor" rows="3" cols="50" id="aauthor"name="authors" form="bookAddForm" placeholder="Enter authors names seperated by ;"  style="width:70%;resize: none;"></textarea></td>
 				  	</tr>
 				  	<tr>
 					  	<td><label for = "copies"><b>Available Copies : </b></label></td>
-					  	<td><input type="text" id = "acopies" name="copies" value= "" placeholder= "Enter Copies Number" style="width:70%"/></td>
+					  	<td><input type="text" id = "acopies" name="copies" value= "" placeholder= "Enter Copies Number" style="width:70%" required/></td>
 				  	</tr>
 			  	</table>
 			  	<input type="submit" value="Add Book"/>
@@ -204,12 +204,12 @@
 			  		</tr>
 			  	</table>
 		  	</form>
-		  	<table id="author-table">
+		  	<table id="author-table" width=100%>
 			  <thead>
 			  	<tr>
-				    <th>AID</th>
+				    <th style="width:15%">AID</th>
 				    <th>Name</th>
-				    <th>Edit Author</th>
+				    <th style="width:15%">Edit Author</th>
 			    </tr>
 			  </thead>
 			  <tbody>
@@ -221,7 +221,7 @@
 			  	<table>
 			  		<tr>
 			  			<td style="width:20%"><label for = "name"><b>Author Name : </b></label></td>
-					  	<td style="width:30%"><input type="text" id = "aauthorname" name="name" value= "" placeholder = "Enter Author Name" style="width:100%"/></td>
+					  	<td style="width:30%"><input type="text" id = "aauthorname" name="name" value= "" placeholder = "Enter Author Name" style="width:100%" required/></td>
 					  	<td><input type="submit" value="Add Author" style ="width:70%;float:right"/></td>
 			  		</tr>
 			  	</table>
@@ -233,9 +233,9 @@
 			  	<table>
 			  		<tr>
 			  			<td style="width:10%"><label for = "aid"><b>AID : </b></label></td>
-					  	<td style="width:30%"><input type="text" id = "eauthorid" name="aid" value= "" placeholder = "Enter AID" style="width:70%"/></td>
+					  	<td style="width:30%"><input type="text" id = "eauthorid" name="aid" value= "" placeholder = "Enter AID" style="width:70%" required/></td>
 			  			<td style="width:20%"><label for = "name"><b>New Author Name : </b></label></td>
-					  	<td style="width:30%"><input type="text" id = "eauthorname" name="name" value= "" placeholder = "Enter New Author Name" style="width:100%"/></td>
+					  	<td style="width:30%"><input type="text" id = "eauthorname" name="name" value= "" placeholder = "Enter New Author Name" style="width:100%" required/></td>
 			  		</tr>
 			  	</table>
 			  	<input type="submit" value="Edit Author"/>
@@ -253,14 +253,30 @@
 		    <li><a id = "edit-publisher-link" href="#publisher-tabs-3">Edit Publisher</a></li>
 		  </ul>
 		  <div id="publisher-tabs-1">
-		  	<table id="publisher-table">
+		  <form id="publisherSearchForm">
+			  	<table>
+			  		<tr>
+			  			<td style="width:10%"><label for = "pid"><b>PID : </b></label></td>
+					  	<td style="width:30%"><input type="text" id = "ipublisherid" name="pid" value= "" placeholder = "Enter PID" style="width:70%"/></td>
+			  			<td style="width:20%"><label for = "name"><b>Publisher Name : </b></label></td>
+					  	<td style="width:30%"><input class="autopublisher"type="text" id = "ipublishername" name="name" value= "" placeholder = "Enter Publisher Name" style="width:100%"/></td>
+			  		</tr>
+			  		<tr>
+			  			<td style="width:10%"><label for = "phone"><b>Phone : </b></label></td>
+					  	<td style="width:30%"><input type="text" id = "ipublisherphone" name="phone" value= "" placeholder = "Enter Phone" style="width:70%"/></td>
+			  			<td style="width:20%"><label for = "address"><b>Address : </b></label></td>
+					  	<td style="width:30%"><input class="autopublisher"type="text" id = "ipublisheraddress" name="address" value= "" placeholder = "Enter Address" style="width:100%"/></td>
+			  		</tr>
+			  	</table>
+		  	</form>
+		  	<table id="publisher-table" width = 100%>
 			  <thead>
 			  	<tr>
 				    <th>PID</th>
 				    <th>Name</th>
 				    <th>Address</th>
 				    <th>Phone</th>
-				    <th>Edit Publisher</th>
+				    <th style="width:15%">Edit Publisher</th>
 			    </tr>
 			  </thead>
 			  <tbody>
@@ -268,11 +284,44 @@
 			</table>  
 		  </div>
 		  <div id="publisher-tabs-2">
-		    <p>Morbi tincidunt, dui sit amet facilisis feugiat, odio metus gravida ante, ut pharetra massa metus id nunc. Duis scelerisque molestie turpis. Sed fringilla, massa eget luctus malesuada, metus eros molestie lectus, ut tempus eros massa ut dolor. Aenean aliquet fringilla sem. Suspendisse sed ligula in ligula suscipit aliquam. Praesent in eros vestibulum mi adipiscing adipiscing. Morbi facilisis. Curabitur ornare consequat nunc. Aenean vel metus. Ut posuere viverra nulla. Aliquam erat volutpat. Pellentesque convallis. Maecenas feugiat, tellus pellentesque pretium posuere, felis lorem euismod felis, eu ornare leo nisi vel felis. Mauris consectetur tortor et purus.</p>
+		  	<form id="publisherAddForm">
+			  	<table>
+			  		<tr>
+			  			<td style="width:20%"><label for = "name"><b>Publisher Name : </b></label></td>
+					  	<td style="width:35%"><input type="text" id = "apublishername" name="name" value= "" placeholder = "Enter Publisher Name" style="width:90%" required/></td>
+					  	<td style="width:15%"><label for = "address"><b>Address : </b></label></td>
+					  	<td style="width:30%"><input type="text" id = "apublisheraddress" name="address" value= "" placeholder = "Enter Address" style="width:100%" required/></td>
+			  		</tr>
+			  		<tr>
+			  			<td style="width:20%"><label for = "phone"><b>Phone : </b></label></td>
+					  	<td style="width:30%"><input type="text" id = "apublisherphone" name="phone" value= "" placeholder = "Enter Phone" style="width:90%" required/></td>
+			  			<td></td>
+			  			<td><input type="submit" value="Add Publisher" style ="width:70%;float:right"/></td>
+			  		</tr>
+			  	</table>
+		  	</form>
+		  	<p id="addPublisherResult"></p>
 		  </div>
 		  <div id="publisher-tabs-3">
-		    <p>Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. Vestibulum non ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce sodales. Quisque eu urna vel enim commodo pellentesque. Praesent eu risus hendrerit ligula tempus pretium. Curabitur lorem enim, pretium nec, feugiat nec, luctus a, lacus.</p>
-		    <p>Duis cursus. Maecenas ligula eros, blandit nec, pharetra at, semper at, magna. Nullam ac lacus. Nulla facilisi. Praesent viverra justo vitae neque. Praesent blandit adipiscing velit. Suspendisse potenti. Donec mattis, pede vel pharetra blandit, magna ligula faucibus eros, id euismod lacus dolor eget odio. Nam scelerisque. Donec non libero sed nulla mattis commodo. Ut sagittis. Donec nisi lectus, feugiat porttitor, tempor ac, tempor vitae, pede. Aenean vehicula velit eu tellus interdum rutrum. Maecenas commodo. Pellentesque nec elit. Fusce in lacus. Vivamus a libero vitae lectus hendrerit hendrerit.</p>
+		 		<form id="publisherEditForm">
+			  	<table>
+			  		<tr>
+			  			<td style="width:20%"><label for = "pid"><b>PID : </b></label></td>
+					  	<td style="width:35%"><input type="text" id = "epublisherid" name="pid" value= "" placeholder = "Enter PID" style="width:90%" required/></td>
+			  			<td style="width:20%"><label for = "name"><b>Publisher Name : </b></label></td>
+					  	<td style="width:35%"><input type="text" id = "epublishername" name="name" value= "" placeholder = "Enter Publisher Name" style="width:90%"/></td>	
+  			  		</tr>
+			  		<tr>
+			  			<td style="width:15%"><label for = "address"><b>Address : </b></label></td>
+					  	<td style="width:30%"><input type="text" id = "epublisheraddress" name="address" value= "" placeholder = "Enter Address" style="width:90%"/></td>
+			  			<td style="width:20%"><label for = "phone"><b>Phone : </b></label></td>
+					  	<td style="width:30%"><input type="text" id = "epublisherphone" name="phone" value= "" placeholder = "Enter Phone" style="width:90%"/></td>
+			  			
+			  		</tr>
+			  	</table>
+			  	<input type="submit" value="Edit Publisher"/>
+		  	</form>
+		  	<p id="editPublisherResult"></p>
 		  </div>
 		</div>
 	</div>
@@ -285,12 +334,22 @@
 		    <li><a id = "edit-category-link" href="#category-tabs-3">Edit Category</a></li>
 		  </ul>
 		  <div id="category-tabs-1">
-		  	<table id="category-table">
+		  	<form id="categorySearchForm">
+			  	<table>
+			  		<tr>
+			  			<td style="width:10%"><label for = "cid"><b>CID : </b></label></td>
+					  	<td style="width:30%"><input type="text" id = "icategoryid" name="cid" value= "" placeholder = "Enter CID" style="width:70%"/></td>
+			  			<td style="width:20%"><label for = "name"><b>Category Name : </b></label></td>
+					  	<td style="width:30%"><input class="autocategory"type="text" id = "icategoryname" name="name" value= "" placeholder = "Enter Category Name" style="width:100%"/></td>
+			  		</tr>
+			  	</table>
+		  	</form>
+		  	<table id="category-table" width=100%>
 			  <thead>
 			  	<tr>
-				    <th>CID</th>
+				    <th style="width:15%">CID</th>
 				    <th>Name</th>
-				    <th>Edit Category</th>
+				    <th style="width:15%">Edit Category</th>
 			    </tr>
 			  </thead>
 			  <tbody>
@@ -298,11 +357,30 @@
 			</table>  
 		  </div>
 		  <div id="category-tabs-2">
-		    <p>Morbi tincidunt, dui sit amet facilisis feugiat, odio metus gravida ante, ut pharetra massa metus id nunc. Duis scelerisque molestie turpis. Sed fringilla, massa eget luctus malesuada, metus eros molestie lectus, ut tempus eros massa ut dolor. Aenean aliquet fringilla sem. Suspendisse sed ligula in ligula suscipit aliquam. Praesent in eros vestibulum mi adipiscing adipiscing. Morbi facilisis. Curabitur ornare consequat nunc. Aenean vel metus. Ut posuere viverra nulla. Aliquam erat volutpat. Pellentesque convallis. Maecenas feugiat, tellus pellentesque pretium posuere, felis lorem euismod felis, eu ornare leo nisi vel felis. Mauris consectetur tortor et purus.</p>
+		  	<form id="categoryAddForm">
+			  	<table>
+			  		<tr>
+			  			<td style="width:20%"><label for = "name"><b>Category Name : </b></label></td>
+					  	<td style="width:30%"><input type="text" id = "acategoryname" name="name" value= "" placeholder = "Enter Category Name" style="width:100%" required/></td>
+					  	<td><input type="submit" value="Add Category" style ="width:70%;float:right"/></td>
+			  		</tr>
+			  	</table>
+		  	</form>
+		  	<p id="addCategoryResult"></p>
 		  </div>
 		  <div id="category-tabs-3">
-		    <p>Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. Vestibulum non ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce sodales. Quisque eu urna vel enim commodo pellentesque. Praesent eu risus hendrerit ligula tempus pretium. Curabitur lorem enim, pretium nec, feugiat nec, luctus a, lacus.</p>
-		    <p>Duis cursus. Maecenas ligula eros, blandit nec, pharetra at, semper at, magna. Nullam ac lacus. Nulla facilisi. Praesent viverra justo vitae neque. Praesent blandit adipiscing velit. Suspendisse potenti. Donec mattis, pede vel pharetra blandit, magna ligula faucibus eros, id euismod lacus dolor eget odio. Nam scelerisque. Donec non libero sed nulla mattis commodo. Ut sagittis. Donec nisi lectus, feugiat porttitor, tempor ac, tempor vitae, pede. Aenean vehicula velit eu tellus interdum rutrum. Maecenas commodo. Pellentesque nec elit. Fusce in lacus. Vivamus a libero vitae lectus hendrerit hendrerit.</p>
+		  	<form id="categoryEditForm">
+			  	<table>
+			  		<tr>
+			  			<td style="width:10%"><label for = "cid"><b>CID : </b></label></td>
+					  	<td style="width:30%"><input type="text" id = "ecategoryid" name="cid" value= "" placeholder = "Enter CID" style="width:70%" required/></td>
+			  			<td style="width:20%"><label for = "name"><b>New Category Name : </b></label></td>
+					  	<td style="width:30%"><input type="text" id = "ecategoryname" name="name" value= "" placeholder = "Enter New Category Name" style="width:100%" required/></td>
+			  		</tr>
+			  	</table>
+			  	<input type="submit" value="Edit Category"/>
+		  	</form>
+		  	<p id="editCategoryResult"></p>
 		  </div>
 		</div>
 	</div>
@@ -314,13 +392,35 @@
 		    <li><a href="#order-tabs-2">Add Order</a></li>
 		  </ul>
 		  <div id="order-tabs-1">
-		 	<table id="order-table">
+		  	<form id="orderSearchForm">
+			  	<table width=100%>
+			  		<tr>
+			  			<td style="width:20%"><label for = "isbn"><b>ISBN : </b></label></td>
+					  	<td style="width:35%"><input type="text" id = "iorderisbn" name="isbn" value= "" placeholder = "Enter ISBN" style="width:70%"/></td>
+			  			<td style="width:20%"></td>
+					  	<td style="width:35%"></td>
+			  		</tr>
+			  		<tr>
+			  			<td style="width:20%"><label for = "lq"><b>Min Quantity : </b></label></td>
+					  	<td style="width:35%"><input type="text" id = "iorderlq" name="lq" value= "" placeholder = "Enter Min Quantity" style="width:70%"/></td>
+			  			<td style="width:20%"><label for = "hq"><b>Max Quantity : </b></label></td>
+					  	<td style="width:35%"><input type="text" id = "iorderhq" name="hq" value= "" placeholder = "Enter Max Quantity" style="width:70%"/></td>
+			  		</tr>
+			  		<tr>
+			  			<td style="width:20%"><label for = "ldate"><b>From : </b></label></td>
+					  	<td style="width:35%"><input class ="mydatepickers"type="text" id = "iorderldate" name="ldate" value= "" placeholder = "Enter Date" style="width:70%"/></td>
+			  			<td style="width:20%"><label for = "hdate"><b>To : </b></label></td>
+					  	<td style="width:35%"><input class ="mydatepickers"type="text" id = "iorderhdate" name="hdate" value= "" placeholder = "Enter Date" style="width:70%"/></td>
+			  		</tr>
+			  	</table>
+		  	</form>
+		 	<table id="order-table" width=100%>
 			  <thead>
 			  	<tr>
 				    <th>ISBN</th>
 				    <th>Time Requested</th>
 				    <th>Quantity</th>
-				    <th>Confirm Order</th>
+				    <th style="width:15%">Confirm Order</th>
 			    </tr>
 			  </thead>
 			  <tbody>
@@ -328,13 +428,47 @@
 			</table>  
 		  </div>
 		  <div id="order-tabs-2">
-		    <p>Morbi tincidunt, dui sit amet facilisis feugiat, odio metus gravida ante, ut pharetra massa metus id nunc. Duis scelerisque molestie turpis. Sed fringilla, massa eget luctus malesuada, metus eros molestie lectus, ut tempus eros massa ut dolor. Aenean aliquet fringilla sem. Suspendisse sed ligula in ligula suscipit aliquam. Praesent in eros vestibulum mi adipiscing adipiscing. Morbi facilisis. Curabitur ornare consequat nunc. Aenean vel metus. Ut posuere viverra nulla. Aliquam erat volutpat. Pellentesque convallis. Maecenas feugiat, tellus pellentesque pretium posuere, felis lorem euismod felis, eu ornare leo nisi vel felis. Mauris consectetur tortor et purus.</p>
+		  		<form id="orderAddForm">
+			  	<table>
+			  		<tr>
+			  			<td style="width:20%"><label for = "isbn"><b>ISBN: </b></label></td>
+					  	<td style="width:35%"><input type="text" id = "aorderisbn" name="isbn" value= "" placeholder = "Enter ISBN" style="width:70%" required/></td>
+					  	<td style="width:20%"><label for = "quantity"><b>Quantity: </b></label></td>
+					  	<td style="width:35%"><input type="text" id = "aorderquantity" name="quantity" value= "" placeholder = "Enter Quantity" style="width:70%" required/></td>
+					  	
+			  		</tr>
+			  	</table>
+			  	<input type="submit" value="Add Order"/>
+		  	</form>
+		  	<p id="addOrderResult"></p>
 		  </div>
 		</div>
 	</div>
 	<div id="Users" class="main" style='display:none'>
 		<h3>Upgrade Users</h3><hr>
-		<table id="user-table">
+		<form id="userSearchForm">
+			  	<table width=100%>
+			  		<tr>
+			  			<td style="width:20%"><label for = "username"><b>Username : </b></label></td>
+					  	<td style="width:35%"><input type="text" id = "iuserusername" name="username" value= "" placeholder = "Enter Username" style="width:70%"/></td>
+			  			<td style="width:20%"><label for = "email"><b>Email : </b></label></td>
+					  	<td style="width:35%"><input type="text" id = "iuseremail" name="email" value= "" placeholder = "Enter Email" style="width:70%"/></td>
+			  		</tr>
+			  		<tr>
+			  			<td style="width:20%"><label for = "firstName"><b>First Name : </b></label></td>
+					  	<td style="width:35%"><input type="text" id = "iuserfirstname" name="firstName" value= "" placeholder = "Enter First Name" style="width:70%"/></td>
+			  			<td style="width:20%"><label for = "lastName"><b>Last Name : </b></label></td>
+					  	<td style="width:35%"><input type="text" id = "iuserlastname" name="lastName" value= "" placeholder = "Enter Last Name" style="width:70%"/></td>
+			  		</tr>
+			  		<tr>
+			  			<td style="width:20%"><label for = "phone"><b>Phone : </b></label></td>
+					  	<td style="width:35%"><input type="text" id = "iuserphone" name="phone" value= "" placeholder = "Enter Phone" style="width:70%"/></td>
+			  			<td style="width:20%"><label for = "address"><b>Address : </b></label></td>
+					  	<td style="width:35%"><input type="text" id = "iuseraddress" name="address" value= "" placeholder = "Enter Address" style="width:70%"/></td>
+			  		</tr>
+			  	</table>
+		  	</form>
+		<table id="user-table" width=100%>
 		  <thead>
 		  	<tr>
 			    <th>Username</th>
@@ -343,7 +477,7 @@
 			    <th>Email</th>
 			    <th>Phone</th>
 			    <th>Address</th>
-			    <th>Upgrade To Manager</th>
+			    <th style="width:15%">Upgrade To Manager</th>
 		    </tr>
 		  </thead>
 		  <tbody>
