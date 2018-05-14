@@ -31,6 +31,13 @@ public class Author {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+	public boolean equals(Object obj) {
+		if (obj instanceof Author) {
+			Author at = (Author)obj;
+			return at.getAid() == this.getAid() && at.getName().equals(this.getName());
+		} else {
+			return false;
+		}
+	}
 	
 }
