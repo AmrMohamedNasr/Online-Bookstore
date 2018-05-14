@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import bean.User;
 import provider.ConnectionProvider;
@@ -101,7 +102,7 @@ public class UserDataDAO {
 			   List<String> options = new ArrayList<String> ();
 			   boolean prevAdded = false;
 			   for (int i = 0; i < attributes.length; i++) {
-				   if (!values.get(i).isEmpty()) {
+				   if (values.get(i) != null && !values.get(i).isEmpty()) {
 					   if (prevAdded) {
 						   sql.append(" , ");
 					   }
@@ -141,7 +142,101 @@ public class UserDataDAO {
 		   }  
 		   return "Unknown Error";
 	   }
-	   
+	   public static List<User> searchUser(User user, boolean addManagerProperty, int limit, int offset,
+			   String sort_by, AtomicInteger queryCount) {
+		   try{  
+			   Connection con= ConnectionProvider.getConnection();
+			   StringBuilder sql = new StringBuilder();
+			   List<String> values = new ArrayList<String> ();
+			   values.add(user.getUsername());
+			   values.add(user.getPassword());
+			   values.add(user.getEmail());
+			   values.add(user.getFirstName());
+			   values.add(user.getLastName());
+			   values.add(user.getPhone());
+			   values.add(user.getAddress());
+			   List<String> options = new ArrayList<String> ();
+			   boolean prevAdded = false;
+			   for (int i = 0; i < attributes.length; i++) {
+				   if (values.get(i) != null && !values.get(i).isEmpty()) {
+					   if (prevAdded) {
+						   sql.append(" and ");
+					   }
+					   sql.append(attributes[i]);
+					   sql.append(" like ? ");
+					   if (attributes[i].equals("password")) {
+						   options.add(md5(values.get(i)));
+					   } else {
+						   options.add(values.get(i));
+					   }
+					   prevAdded = true;
+				   }
+			   }
+			   if (addManagerProperty) {
+				   if (prevAdded) {
+					   sql.append(" and ");
+				   }
+				   sql.append("manager");
+				   sql.append(" = ");
+				   if (user.isManager()) {
+					   sql.append(1);
+				   } else {
+					   sql.append(0);
+				   }
+			   }
+			   StringBuilder cmd1 = new StringBuilder("Select * From User ");
+			   StringBuilder cmd2 = new StringBuilder("Select count(*) From User ");
+			   if (sql.length() != 0) {
+				   cmd1.append(" where ");
+				   cmd1.append(sql);
+				   cmd2.append(" where ");
+				   cmd2.append(sql);
+			   }
+			   if (sort_by != null) {
+				   cmd1.append(" Order By ");
+				   cmd1.append(sort_by);
+			   }
+			   if (limit != 0) {
+				   cmd1.append(" limit ? ");
+			   }
+			   if (offset != 0) {
+				   cmd1.append(" offset ? ");
+			   }
+			   PreparedStatement ps=con.prepareStatement(cmd1.toString());
+			   PreparedStatement ps2=con.prepareStatement(cmd2.toString());  
+			   int i = 0;
+			   int ia = 1;
+			   for (i = 0; i < options.size(); i++) {
+				   ps.setString(i + ia, "%" + options.get(i) + "%");
+				   ps2.setString(i + ia, "%" + options.get(i) + "%");
+			   }
+			   ia += i;
+			   if (limit != 0) {
+				   ps.setInt(ia, limit);
+				   ia++;
+			   }
+			   if (offset != 0) {
+				   ps.setInt(ia, offset);
+				   ia++;
+			   }
+			   ResultSet set = ps.executeQuery(); 
+			   List<User> pubs = new ArrayList<User>();
+			   while(set.next()) {
+				   pubs.add(new User(set));
+			   }
+			   if (queryCount != null) {
+				   set = ps2.executeQuery();
+				   set.next();
+				   queryCount.set(set.getInt(1));
+			   }
+			   return pubs;
+		   } catch (SQLException ex) {
+			   return null;
+		   }catch(Exception e){
+			   e.printStackTrace();
+		   }  
+		   return null;
+	   }
 	   public static String md5( String source ) {
 		    try {
 		        MessageDigest md = MessageDigest.getInstance( "MD5" );
@@ -168,4 +263,16 @@ public class UserDataDAO {
 	     }
 	     return sb.toString();
 	   }
+	   public static int total_record() {
+			try {
+				Connection connect = ConnectionProvider.getConnection();
+				ResultSet set2 = connect.createStatement().executeQuery(
+						"Select count(*) From User");
+				set2.next();
+				return set2.getInt(1);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return 0;
+		}
 }
