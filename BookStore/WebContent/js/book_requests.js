@@ -52,7 +52,7 @@ function add_book() {
     	   if (data.code == 200) {
                $("#addBookResult").text(data.message);
                $("#addBookResult").css('color', 'green');
-               $("#books-table").data('dynatable').process();
+               update_book_table();
                $('#atitle').val("");
                $('#aisbn').val("");
                $('#acategory').val("");
@@ -86,7 +86,7 @@ function edit_book() {
     	   if (data.code == 200) {
                $("#editBookResult").text(data.message);
                $("#editBookResult").css('color', 'green');
-               $("#books-table").data('dynatable').process();
+              update_book_table();
     	   } else {
     		   $("#editBookResult").text(data.message);
                $("#editBookResult").css('color', 'red');

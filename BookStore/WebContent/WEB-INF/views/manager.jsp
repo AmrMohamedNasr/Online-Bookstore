@@ -18,6 +18,12 @@
 <script type="text/javascript" src="js/dialog.js" ></script>
 <script type="text/javascript" src="js/manager_page.js"></script>
 <script type="text/javascript" src="js/book_requests.js"></script>
+<script type="text/javascript" src="js/author_requests.js"></script>
+<script type="text/javascript" src="js/category_requests.js"></script>
+<script type="text/javascript" src="js/publisher_requests.js"></script>
+<script type="text/javascript" src="js/order_requests.js"></script>
+<script type="text/javascript" src="js/user_requests.js"></script>
+<script type="text/javascript" src="js/report_requests.js"></script>
 </head>
 <body>
 <jsp:include page="_menu.jsp"></jsp:include>
@@ -25,12 +31,12 @@
 	<div id = "sidenavinner">
 	<div id = "sidenavinnerinner">
 	  <h2> Options</h2>
-	  <a class="sideNavButton active" onclick="openTab(event, 'Books')">Books</a>
-	  <a class="sideNavButton" onclick="openTab(event, 'Authors')">Authors</a>
-	  <a class="sideNavButton" onclick="openTab(event, 'Publishers')">Publishers</a>
-	  <a class="sideNavButton" onclick="openTab(event, 'Categories')">Categories</a>
-	  <a class="sideNavButton" onclick="openTab(event, 'Orders')">Orders</a>
-	  <a class="sideNavButton" onclick="openTab(event, 'Users')">Users</a>
+	  <a class="sideNavButton active" onclick="openTab(event, 'Books');update_book_table();">Books</a>
+	  <a class="sideNavButton" onclick="openTab(event, 'Authors');update_author_table();">Authors</a>
+	  <a class="sideNavButton" onclick="openTab(event, 'Publishers');update_publisher_table();">Publishers</a>
+	  <a class="sideNavButton" onclick="openTab(event, 'Categories');update_category_table();">Categories</a>
+	  <a class="sideNavButton" onclick="openTab(event, 'Orders');update_order_table();">Orders</a>
+	  <a class="sideNavButton" onclick="openTab(event, 'Users');update_user_table();">Users</a>
 	  <a class="sideNavButton" onclick="openTab(event, 'Reports')">Reports</a>
 	</div>
 	</div>
@@ -40,7 +46,7 @@
 		<h3>Books</h3><hr>
 		<div id="bookTabs">
 		  <ul>
-		    <li><a href="#book-tabs-1">Search Books</a></li>
+		    <li><a href="#book-tabs-1" onclick="update_book_table()">Search Books</a></li>
 		    <li><a href="#book-tabs-2">Add Book</a></li>
 		    <li><a id = "edit-book-link" href="#book-tabs-3">Edit Book</a></li>
 		  </ul>
@@ -183,11 +189,21 @@
 		<h3>Authors</h3><hr>
 		<div id="authorTabs">
 		  <ul>
-		    <li><a href="#author-tabs-1">Search Authors</a></li>
+		    <li><a href="#author-tabs-1" onclick="update_author_table()">Search Authors</a></li>
 		    <li><a href="#author-tabs-2">Add Author</a></li>
-		    <li><a href="#author-tabs-3">Edit Author</a></li>
+		    <li><a id = "edit-author-link" href="#author-tabs-3">Edit Author</a></li>
 		  </ul>
 		  <div id="author-tabs-1">
+		  <form id="authorSearchForm">
+			  	<table>
+			  		<tr>
+			  			<td style="width:10%"><label for = "aid"><b>AID : </b></label></td>
+					  	<td style="width:30%"><input type="text" id = "iauthorid" name="aid" value= "" placeholder = "Enter AID" style="width:70%"/></td>
+			  			<td style="width:20%"><label for = "name"><b>Author Name : </b></label></td>
+					  	<td style="width:30%"><input class="autosauthor"type="text" id = "iauthorname" name="name" value= "" placeholder = "Enter Author Name" style="width:100%"/></td>
+			  		</tr>
+			  	</table>
+		  	</form>
 		  	<table id="author-table">
 			  <thead>
 			  	<tr>
@@ -201,11 +217,30 @@
 			</table>
 		  </div>
 		  <div id="author-tabs-2">
-		    <p>Morbi tincidunt, dui sit amet facilisis feugiat, odio metus gravida ante, ut pharetra massa metus id nunc. Duis scelerisque molestie turpis. Sed fringilla, massa eget luctus malesuada, metus eros molestie lectus, ut tempus eros massa ut dolor. Aenean aliquet fringilla sem. Suspendisse sed ligula in ligula suscipit aliquam. Praesent in eros vestibulum mi adipiscing adipiscing. Morbi facilisis. Curabitur ornare consequat nunc. Aenean vel metus. Ut posuere viverra nulla. Aliquam erat volutpat. Pellentesque convallis. Maecenas feugiat, tellus pellentesque pretium posuere, felis lorem euismod felis, eu ornare leo nisi vel felis. Mauris consectetur tortor et purus.</p>
+		 	 <form id="authorAddForm">
+			  	<table>
+			  		<tr>
+			  			<td style="width:20%"><label for = "name"><b>Author Name : </b></label></td>
+					  	<td style="width:30%"><input type="text" id = "aauthorname" name="name" value= "" placeholder = "Enter Author Name" style="width:100%"/></td>
+					  	<td><input type="submit" value="Add Author" style ="width:70%;float:right"/></td>
+			  		</tr>
+			  	</table>
+		  	</form>
+		  	<p id="addAuthorResult"></p>
 		  </div>
 		  <div id="author-tabs-3">
-		    <p>Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. Vestibulum non ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce sodales. Quisque eu urna vel enim commodo pellentesque. Praesent eu risus hendrerit ligula tempus pretium. Curabitur lorem enim, pretium nec, feugiat nec, luctus a, lacus.</p>
-		    <p>Duis cursus. Maecenas ligula eros, blandit nec, pharetra at, semper at, magna. Nullam ac lacus. Nulla facilisi. Praesent viverra justo vitae neque. Praesent blandit adipiscing velit. Suspendisse potenti. Donec mattis, pede vel pharetra blandit, magna ligula faucibus eros, id euismod lacus dolor eget odio. Nam scelerisque. Donec non libero sed nulla mattis commodo. Ut sagittis. Donec nisi lectus, feugiat porttitor, tempor ac, tempor vitae, pede. Aenean vehicula velit eu tellus interdum rutrum. Maecenas commodo. Pellentesque nec elit. Fusce in lacus. Vivamus a libero vitae lectus hendrerit hendrerit.</p>
+		  	<form id="authorEditForm">
+			  	<table>
+			  		<tr>
+			  			<td style="width:10%"><label for = "aid"><b>AID : </b></label></td>
+					  	<td style="width:30%"><input type="text" id = "eauthorid" name="aid" value= "" placeholder = "Enter AID" style="width:70%"/></td>
+			  			<td style="width:20%"><label for = "name"><b>New Author Name : </b></label></td>
+					  	<td style="width:30%"><input type="text" id = "eauthorname" name="name" value= "" placeholder = "Enter New Author Name" style="width:100%"/></td>
+			  		</tr>
+			  	</table>
+			  	<input type="submit" value="Edit Author"/>
+		  	</form>
+		  	<p id="editAuthorResult"></p>
 		  </div>
 		</div>
 	</div>
@@ -213,9 +248,9 @@
 		<h3>Publishers</h3><hr>
 		<div id="publisherTabs">
 		  <ul>
-		    <li><a href="#publisher-tabs-1">Search Publishers</a></li>
+		    <li><a href="#publisher-tabs-1" onclick="update_publisher_table()">Search Publishers</a></li>
 		    <li><a href="#publisher-tabs-2">Add Publisher</a></li>
-		    <li><a href="#publisher-tabs-3">Edit Publisher</a></li>
+		    <li><a id = "edit-publisher-link" href="#publisher-tabs-3">Edit Publisher</a></li>
 		  </ul>
 		  <div id="publisher-tabs-1">
 		  	<table id="publisher-table">
@@ -245,9 +280,9 @@
 		<h3>Categories</h3><hr>
 		<div id="categoryTabs">
 		  <ul>
-		    <li><a href="#category-tabs-1">Search Categories</a></li>
+		    <li><a href="#category-tabs-1" onclick="update_category_table()">Search Categories</a></li>
 		    <li><a href="#category-tabs-2">Add Category</a></li>
-		    <li><a href="#category-tabs-3">Edit Category</a></li>
+		    <li><a id = "edit-category-link" href="#category-tabs-3">Edit Category</a></li>
 		  </ul>
 		  <div id="category-tabs-1">
 		  	<table id="category-table">
@@ -255,7 +290,6 @@
 			  	<tr>
 				    <th>CID</th>
 				    <th>Name</th>
-				    <th>Address</th>
 				    <th>Edit Category</th>
 			    </tr>
 			  </thead>
@@ -276,7 +310,7 @@
 		<h3>Orders</h3><hr>
 		<div id="orderTabs">
 		  <ul>
-		    <li><a href="#order-tabs-1">Search Orders</a></li>
+		    <li><a href="#order-tabs-1" onclick="update_order_table()">Search Orders</a></li>
 		    <li><a href="#order-tabs-2">Add Order</a></li>
 		  </ul>
 		  <div id="order-tabs-1">
@@ -300,7 +334,7 @@
 	</div>
 	<div id="Users" class="main" style='display:none'>
 		<h3>Upgrade Users</h3><hr>
-		<table id="publisher-table">
+		<table id="user-table">
 		  <thead>
 		  	<tr>
 			    <th>Username</th>
