@@ -34,6 +34,7 @@ public class UserManagerServlet extends HttpServlet {
         String lastName = string_parse(request.getParameter("queries[lastName]"));
         String phone = string_parse(request.getParameter("queries[phone]"));
         String address = string_parse(request.getParameter("queries[address]"));
+        String usertypes = string_parse(request.getParameter("queries[usertype]"));
         String perPageS = request.getParameter("perPage");
         String offsetS = request.getParameter("offset");
         JSONObject jsonResp = new JSONObject();
@@ -61,9 +62,24 @@ public class UserManagerServlet extends HttpServlet {
     		ParseUtils.doJsonResponse(jsonResp, response, code, message);
             return;
         }
-        User user = new User(username,null, email, 0, false, firstName, lastName, phone, address);
+        boolean include_manager = false;
+        boolean is_manager = false;
+        if (usertypes != null && !usertypes.equals("All")) {
+        	include_manager = true;
+        	if (usertypes.equals("Managers")) {
+        		is_manager = true;
+        	} else if (usertypes.equals("Only Users")) {
+        		is_manager = false;
+        	} else {
+        		code = 400;
+        		message = "Invalid User Type , enter a valid user type please.";
+        		ParseUtils.doJsonResponse(jsonResp, response, code, message);
+                return;
+        	}
+        }
+        User user = new User(username,null, email, 0, is_manager, firstName, lastName, phone, address);
         AtomicInteger queryCount = new AtomicInteger();
-        List<User> users = UserDataDAO.searchUser(user, false, perPage, offset,
+        List<User> users = UserDataDAO.searchUser(user, include_manager, perPage, offset,
         		sort_attr.toString().isEmpty()?null:sort_attr.toString(), queryCount);
         JSONArray array = new JSONArray();
     	for (int i = 0;users != null && i < users.size(); i++) {

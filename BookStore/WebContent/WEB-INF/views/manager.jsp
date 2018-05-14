@@ -466,8 +466,19 @@
 			  			<td style="width:20%"><label for = "address"><b>Address : </b></label></td>
 					  	<td style="width:35%"><input type="text" id = "iuseraddress" name="address" value= "" placeholder = "Enter Address" style="width:70%"/></td>
 			  		</tr>
+			  		<tr>
+			  			<td><label for="usertype"><b>User Type : </b></label></td>
+			  			<td><select id="iusertype" name="usertype">
+							  <option >All</option>
+							  <option >Managers</option>
+							  <option >Only Users</option>
+							</select></td>
+			  			<td></td>
+			  			<td></td>
+			  		</tr>
 			  	</table>
 		  	</form>
+		  	<br>
 		<table id="user-table" width=100%>
 		  <thead>
 		  	<tr>

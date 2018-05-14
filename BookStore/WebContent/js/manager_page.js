@@ -304,7 +304,7 @@ $(function() {
 			    perPageSelect: true
 			  },
 			  inputs: {
-			    queries: $("#iuserusername,#iuserfirstname,#iuserlastname,#iuseremail,#iuserphone,#iuseraddress") ,
+			    queries: $("#iuserusername,#iuserfirstname,#iuserlastname,#iuseremail,#iuserphone,#iuseraddress,#iusertype") ,
 			    sorts: null,
 			    multisort: null,
 			    page: null,
