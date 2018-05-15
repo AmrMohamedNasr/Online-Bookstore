@@ -37,7 +37,7 @@
 	  <a class="sideNavButton" onclick="openTab(event, 'Categories');update_category_table();">Categories</a>
 	  <a class="sideNavButton" onclick="openTab(event, 'Orders');update_order_table();">Orders</a>
 	  <a class="sideNavButton" onclick="openTab(event, 'Users');update_user_table();">Users</a>
-	  <a class="sideNavButton" onclick="openTab(event, 'Reports')">Reports</a>
+	  <a class="sideNavButton" onclick="openTab(event, 'Reports');ask_for_report(0);">Reports</a>
 	</div>
 	</div>
 </div>
@@ -497,6 +497,40 @@
 	</div>
 	<div id="Reports" class="main" style='display:none'>
 		<h3>Reports</h3><hr>
+		<div id="reportTabs">
+		 <ul>
+		    <li><a href="#pdf1" onclick="ask_for_report(0)">Monthly Total Book Sales</a></li>
+		    <li><a href="#pdf2" onclick="ask_for_report(1)">Monthly Individual Books Sales</a></li>
+		    <li><a href="#pdf3" onclick="ask_for_report(2)">Top 5 Users(Money Spend) last 3 months</a></li>
+		    <li><a href="#pdf4" onclick="ask_for_report(3)">Top 5 Users(Books Bought) last 3 months</a></li>
+		    <li><a href="#pdf5" onclick="ask_for_report(4)">Top 10 Books(Money Gain) last 3 months</a></li>
+		    <li><a href="#pdf6" onclick="ask_for_report(5)">Top 10 Books(Amount Sold) last 3 months</a></li>
+		  </ul>
+		  <div class="pdfframes" id = "pdf1">
+		  <iframe class="pdfframes" id = "ipdf1" width=100% >
+		  </iframe>
+		  </div>
+		  <div class="pdfframes" id = "pdf2">
+		  <iframe class="pdfframes" id = "ipdf2" width=100% >
+		  </iframe>
+		  </div>
+		  <div class="pdfframes" id = "pdf3">
+		  <iframe  class="pdfframes"id = "ipdf3" width=100% >
+		  </iframe>
+		  </div>
+		  <div class="pdfframes" id = "pdf4">
+		  <iframe class="pdfframes" id = "ipdf4" width=100% >
+		  </iframe>
+		  </div>
+		  <div class="pdfframes" id = "pdf5">
+		  <iframe class="pdfframes" id = "ipdf5" width=100% >
+		  </iframe>
+		  </div>
+		  <div class="pdfframes" id = "pdf6">
+		  <iframe class="pdfframes" id = "ipdf6" width=100% >
+		  </iframe>
+		  </div>
+	  </div>
 	</div>
 </div>
 </body>

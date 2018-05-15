@@ -11,6 +11,10 @@ $(function() {
 	$("#categoryTabs").tabs();
 	$("#publisherTabs").tabs();
 	$("#orderTabs").tabs();
+	$("#reportTabs").tabs().css({
+		   'min-height': '400px',
+		   'overflow': 'auto'
+		});
 	/** Tables Initialization **/
 	$('#books-table').dynatable(
 		{

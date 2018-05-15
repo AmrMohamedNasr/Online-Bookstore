@@ -145,7 +145,15 @@ button.hoverButtonleft:hover span::before {
 	background: #5ba63c !important;
 	border-color: #006a72 !important;
 }
+#reportTabs .ui-state-active {
+	background: #5ba63c !important;
+	border-color: #006a72 !important;
+}
 button:disabled {
     background: #dddddd;
     cursor:not-allowed;
+}
+
+.pdfframes {
+	height:1000px !important;
 }

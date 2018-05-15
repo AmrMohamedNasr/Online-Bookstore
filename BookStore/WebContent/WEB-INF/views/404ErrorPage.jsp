@@ -5,6 +5,8 @@
       <meta charset="UTF-8">
       <title>Page not found</title>
       <link rel="stylesheet" type="text/css" href="css/nav_bar.css" />
+      <link rel="stylesheet" type="text/css" href="css/general.css" />
+      <link rel="stylesheet" type="text/css" href="css/side_nav.css" />
    </head>
    <body>
  <div class='pagebody'>
