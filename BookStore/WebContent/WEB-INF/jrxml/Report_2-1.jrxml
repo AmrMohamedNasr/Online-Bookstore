@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Report 2-1" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e0d4d72e-e259-4a31-8b10-ba3d0c7d3da1">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Report 2-2" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e0d4d72e-e259-4a31-8b10-ba3d0c7d3da1">
 	<property name="template.engine" value="tabular_template"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
@@ -44,50 +44,48 @@
 			<rightPen lineWidth="0.5" lineColor="#000000"/>
 		</box>
 	</style>
-	<subDataset name="tableDataset" uuid="e3323b94-995a-4abf-b0bc-679c6139ddfe">
+	<subDataset name="tableDataset" uuid="485ec0c6-2a3f-41f3-baed-9c95ea8f3e1c">
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="bookstore MySQL"/>
 		<queryString language="SQL">
-			<![CDATA[Select Purchase.isbn, title, Sum(amount), sum(totalPrice)
- From Purchase,Book 
- where Book.isbn = Purchase.isbn and purchaseDate >= current_timestamp() - Interval 1 month 
- group by Purchase.isbn]]>
+			<![CDATA[Select username,firstName, lastName, email, phone, sum(totalPrice), sum(amount)
+ from User, Purchase 
+ where User.uid = Purchase.uid and purchaseDate >= current_timestamp() - Interval 3 month
+  group by Purchase.uid
+  order by sum(totalPrice) desc limit 5;]]>
 		</queryString>
-		<field name="isbn" class="java.math.BigDecimal">
-			<property name="com.jaspersoft.studio.field.label" value="isbn"/>
-			<property name="com.jaspersoft.studio.field.tree.path" value="Purchase"/>
+		<field name="username" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="username"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="User"/>
 		</field>
-		<field name="title" class="java.lang.String">
-			<property name="com.jaspersoft.studio.field.label" value="title"/>
-			<property name="com.jaspersoft.studio.field.tree.path" value="Book"/>
+		<field name="firstName" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="firstName"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="User"/>
 		</field>
-		<field name="Sum(amount)" class="java.math.BigDecimal">
-			<property name="com.jaspersoft.studio.field.label" value="Sum(amount)"/>
+		<field name="lastName" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="lastName"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="User"/>
+		</field>
+		<field name="email" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="email"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="User"/>
+		</field>
+		<field name="phone" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="phone"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="User"/>
 		</field>
 		<field name="sum(totalPrice)" class="java.lang.Double">
 			<property name="com.jaspersoft.studio.field.label" value="sum(totalPrice)"/>
 		</field>
+		<field name="sum(amount)" class="java.math.BigDecimal">
+			<property name="com.jaspersoft.studio.field.label" value="sum(amount)"/>
+		</field>
 	</subDataset>
 	<parameter name="basePath" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[Select Purchase.isbn, title, Sum(amount), sum(totalPrice) From Purchase,Book where Book.isbn = Purchase.isbn and purchaseDate >= current_timestamp() - Interval 1 month 
-group by Purchase.isbn]]>
+		<![CDATA[]]>
 	</queryString>
-	<field name="isbn" class="java.math.BigDecimal">
-		<property name="com.jaspersoft.studio.field.label" value="isbn"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="Purchase"/>
-	</field>
-	<field name="title" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="title"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="Book"/>
-	</field>
-	<field name="Sum(amount)" class="java.math.BigDecimal">
-		<property name="com.jaspersoft.studio.field.label" value="Sum(amount)"/>
-	</field>
-	<field name="sum(totalPrice)" class="java.lang.Double">
-		<property name="com.jaspersoft.studio.field.label" value="sum(totalPrice)"/>
-	</field>
 	<title>
-		<band height="68" splitType="Stretch">
+		<band height="70" splitType="Stretch">
 			<image>
 				<reportElement x="275" y="0" width="300" height="64" uuid="269d6e4b-c795-405c-82e2-e94921fd4c24"/>
 				<imageExpression><![CDATA[$P{basePath}+"leaf_banner_violet.png"]]></imageExpression>
@@ -95,12 +93,12 @@ group by Purchase.isbn]]>
 			<staticText>
 				<reportElement style="Title" x="0" y="13" width="263" height="33" uuid="eb5e714c-7e75-449b-8ab4-3eee7bd15220"/>
 				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[Online Bookstore]]></text>
+				<text><![CDATA[Leaf Violet Title]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="SubTitle" x="63" y="46" width="200" height="22" uuid="451ded6c-9af3-40b6-a683-85adf965354c"/>
 				<textElement textAlignment="Right"/>
-				<text><![CDATA[Report 2 - 1]]></text>
+				<text><![CDATA[Leaf Violet SubTitle]]></text>
 			</staticText>
 		</band>
 	</title>
@@ -133,110 +131,192 @@ group by Purchase.isbn]]>
 		<band height="200" splitType="Stretch">
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<componentElement>
-				<reportElement x="0" y="0" width="555" height="200" uuid="b1d355fb-0765-495d-855f-9f6f50a1b895">
+				<reportElement x="-20" y="0" width="595" height="150" uuid="10b804de-ff61-44ed-8dd6-bd4fe851d283">
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
 					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="tableDataset" uuid="03e11e84-4ab5-487f-94db-2ba112eed569">
+					<datasetRun subDataset="tableDataset" uuid="521009fe-01c6-4c51-a02f-43030dff01e4">
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="100" uuid="c0445b8a-9df2-4932-89e4-710b9d67aa68">
-						<jr:tableHeader style="Table_TH" height="30">
-							<textField>
-								<reportElement style="SubTitle" x="0" y="0" width="100" height="30" forecolor="#990099" uuid="f57a1619-c3b7-43c6-be90-20fefb902985"/>
-								<textElement>
-									<font isBold="true"/>
-								</textElement>
-								<textFieldExpression><![CDATA["ISBN"]]></textFieldExpression>
-							</textField>
-						</jr:tableHeader>
+					<jr:column width="70" uuid="3c8332ec-1ba0-4077-9caf-987e8c02a37b">
+						<jr:tableHeader style="Table_TH" height="30"/>
 						<jr:tableFooter style="Table_TH" height="30"/>
 						<jr:columnHeader style="Table_CH" height="30">
+							<frame>
+								<reportElement x="0" y="0" width="70" height="30" uuid="49c69f67-0595-43b9-abdf-1fe9bff97e09"/>
+								<staticText>
+									<reportElement key="" style="SubTitle" x="0" y="0" width="70" height="30" forecolor="#727272" uuid="89bd803b-a116-4b27-9a79-6b7e33ef94ba"/>
+									<box leftPadding="2"/>
+									<textElement>
+										<font fontName="Arial" size="16" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Uname]]></text>
+								</staticText>
+							</frame>
+						</jr:columnHeader>
+						<jr:columnFooter style="Table_CH" height="30"/>
+						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement style="Detail" x="0" y="0" width="100" height="30" uuid="b8e1f3cd-ed0a-4154-b7fc-e9a36ff91235"/>
+								<reportElement style="Detail" x="0" y="0" width="70" height="30" uuid="c7a4c213-5774-43c3-b32b-75398e069d22"/>
 								<box leftPadding="2"/>
 								<textElement>
 									<font fontName="Arial" size="12"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{isbn}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{username}]]></textFieldExpression>
 							</textField>
-						</jr:columnHeader>
-						<jr:columnFooter style="Table_CH" height="30"/>
-						<jr:detailCell style="Table_TD" height="30"/>
+						</jr:detailCell>
 					</jr:column>
-					<jr:column width="70" uuid="21060c01-e177-4172-8e0d-e6a3ebdd2ef9">
-						<jr:tableHeader style="Table_TH" height="30">
-							<textField>
-								<reportElement style="SubTitle" x="0" y="0" width="70" height="30" forecolor="#990099" uuid="d2bf77ff-b756-47ac-9b1e-e82b875c3d20"/>
-								<textElement>
-									<font isBold="true"/>
-								</textElement>
-								<textFieldExpression><![CDATA["Title"]]></textFieldExpression>
-							</textField>
-						</jr:tableHeader>
+					<jr:column width="80" uuid="37e054de-31c5-4d3a-9d0e-c9ea313b813b">
+						<jr:tableHeader style="Table_TH" height="30"/>
 						<jr:tableFooter style="Table_TH" height="30"/>
 						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement key="" style="SubTitle" x="0" y="0" width="80" height="30" forecolor="#727272" uuid="745eef06-2ac9-4720-ae61-6b7a1c77ecdf"/>
+								<box leftPadding="2"/>
+								<textElement>
+									<font fontName="Arial" size="16" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Fname]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnFooter style="Table_CH" height="30"/>
+						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement style="Detail" x="0" y="0" width="70" height="30" uuid="bd0cb629-917e-499d-a8e8-127b312bd5ad"/>
+								<reportElement style="Detail" x="0" y="0" width="80" height="30" uuid="e39fcf14-f8c0-4208-8210-795002b8bac6"/>
 								<box leftPadding="2"/>
 								<textElement>
 									<font fontName="Arial" size="12"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{firstName}]]></textFieldExpression>
 							</textField>
-						</jr:columnHeader>
-						<jr:columnFooter style="Table_CH" height="30"/>
-						<jr:detailCell style="Table_TD" height="30"/>
+						</jr:detailCell>
 					</jr:column>
-					<jr:column width="190" uuid="8b5b6ae9-7bc2-4742-945a-15fa8af2f36a">
-						<jr:tableHeader style="Table_TH" height="30">
-							<textField>
-								<reportElement style="SubTitle" x="0" y="0" width="190" height="30" forecolor="#990099" uuid="0bfc522b-529b-41ac-88f3-d9a3be0a46f1"/>
-								<textElement>
-									<font isBold="true"/>
-								</textElement>
-								<textFieldExpression><![CDATA["Sum of amounts"]]></textFieldExpression>
-							</textField>
-						</jr:tableHeader>
+					<jr:column width="62" uuid="348fefe9-39cf-4361-b8a3-7788df3c0fd2">
+						<jr:tableHeader style="Table_TH" height="30"/>
 						<jr:tableFooter style="Table_TH" height="30"/>
 						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement key="" style="SubTitle" x="0" y="0" width="62" height="30" forecolor="#727272" uuid="394f2e62-1d51-4cae-862e-80005fd2a9ce"/>
+								<box leftPadding="2"/>
+								<textElement>
+									<font fontName="Arial" size="16" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Lname]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnFooter style="Table_CH" height="30"/>
+						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement style="Detail" x="0" y="0" width="190" height="30" uuid="412ab6c0-fb44-466a-8f27-00ee7164524b"/>
+								<reportElement style="Detail" x="0" y="0" width="62" height="30" uuid="6650ff6b-80b8-4a36-95e7-d09b69ef62ca"/>
 								<box leftPadding="2"/>
 								<textElement>
 									<font fontName="Arial" size="12"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{Sum(amount)}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lastName}]]></textFieldExpression>
 							</textField>
-						</jr:columnHeader>
-						<jr:columnFooter style="Table_CH" height="30"/>
-						<jr:detailCell style="Table_TD" height="30"/>
+						</jr:detailCell>
 					</jr:column>
-					<jr:column width="285" uuid="5ccf8f67-329c-4ac0-aa37-d00d46c556d2">
-						<jr:tableHeader style="Table_TH" height="30">
-							<textField>
-								<reportElement style="SubTitle" x="0" y="0" width="285" height="30" forecolor="#990099" uuid="a9e714e5-a5e3-44f6-aff4-514b817e4605"/>
-								<textElement>
-									<font isBold="true"/>
-								</textElement>
-								<textFieldExpression><![CDATA["Sum of total prices"]]></textFieldExpression>
-							</textField>
-						</jr:tableHeader>
+					<jr:column width="79" uuid="ab2ab46d-085b-4921-8b89-a252999a61a9">
+						<jr:tableHeader style="Table_TH" height="30"/>
 						<jr:tableFooter style="Table_TH" height="30"/>
 						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement key="" style="SubTitle" x="0" y="0" width="79" height="30" forecolor="#727272" uuid="32d38d74-c23f-4224-aa7a-6fe035ea8f4c"/>
+								<box leftPadding="2"/>
+								<textElement>
+									<font fontName="Arial" size="16" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Email]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnFooter style="Table_CH" height="30"/>
+						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement style="Detail" x="0" y="0" width="285" height="30" uuid="67f4a06f-863a-4c53-b9a6-b2868817e647"/>
+								<reportElement style="Detail" x="0" y="0" width="79" height="30" uuid="d51fd6c1-a4b2-480c-8a18-3920029e14aa"/>
+								<box leftPadding="2"/>
+								<textElement>
+									<font fontName="Arial" size="12"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="80" uuid="7c0ee151-db27-4258-a4fd-7428da3b65cb">
+						<jr:tableHeader style="Table_TH" height="30"/>
+						<jr:tableFooter style="Table_TH" height="30"/>
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement key="" style="SubTitle" x="0" y="0" width="80" height="30" forecolor="#727272" uuid="cb4af510-a9db-489e-8a7f-ec148c7aef66"/>
+								<box leftPadding="2"/>
+								<textElement>
+									<font fontName="Arial" size="16" isBold="true"/>
+								</textElement>
+								<text><![CDATA[phone]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnFooter style="Table_CH" height="30"/>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement style="Detail" x="0" y="0" width="80" height="30" uuid="67f1dafb-be39-44a2-bf69-d96eef9dc43f"/>
+								<box leftPadding="2"/>
+								<textElement>
+									<font fontName="Arial" size="12"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{phone}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="109" uuid="aeea80e5-1edf-45f4-a943-2a64611ca952">
+						<jr:tableHeader style="Table_TH" height="30"/>
+						<jr:tableFooter style="Table_TH" height="30"/>
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement key="" style="SubTitle" x="0" y="0" width="109" height="30" forecolor="#727272" uuid="c0ce1cdf-a80a-45ad-b4e1-3a529ea00e94"/>
+								<box leftPadding="2"/>
+								<textElement>
+									<font fontName="Arial" size="16" isBold="true"/>
+								</textElement>
+								<text><![CDATA[sum total Price]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnFooter style="Table_CH" height="30"/>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement style="Detail" x="0" y="0" width="109" height="30" uuid="746bad83-50fd-4f49-8d8d-eeed1bdd595e"/>
 								<box leftPadding="2"/>
 								<textElement>
 									<font fontName="Arial" size="12"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{sum(totalPrice)}]]></textFieldExpression>
 							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="115" uuid="13ad0aee-61ef-45f6-bf72-43758dc83514">
+						<jr:tableHeader style="Table_TH" height="30"/>
+						<jr:tableFooter style="Table_TH" height="30"/>
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement key="" style="SubTitle" x="0" y="0" width="115" height="30" forecolor="#727272" uuid="3b843973-3dab-43bb-b7f4-e20bec5c150a"/>
+								<box leftPadding="2"/>
+								<textElement>
+									<font fontName="Arial" size="16" isBold="true"/>
+								</textElement>
+								<text><![CDATA[sum amount]]></text>
+							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter style="Table_CH" height="30"/>
-						<jr:detailCell style="Table_TD" height="30"/>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement style="Detail" x="0" y="0" width="115" height="30" uuid="f946b71b-eab4-45bb-837d-d2a1fc20bcd5"/>
+								<box leftPadding="2"/>
+								<textElement>
+									<font fontName="Arial" size="12"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{sum(amount)}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
 					</jr:column>
 				</jr:table>
 			</componentElement>
