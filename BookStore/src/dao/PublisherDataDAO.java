@@ -181,19 +181,20 @@ public class PublisherDataDAO {
 				   sql.append(" address like ?");
 				   prev_added = true;
 			   }
+			   sql.append(" limit 10");
 			   PreparedStatement ps=con.prepareStatement(  
 			       sql.toString());  
 			   int col = 1;
 			   if (phone) {
-				   ps.setString(col, "%" + publisher.getPhone() + "%");
+				   ps.setString(col, publisher.getPhone() + "%");
 				   col++;
 			   }
 			   if (name) {
-				   ps.setString(col, "%" + publisher.getName() + "%");
+				   ps.setString(col, publisher.getName() + "%");
 				   col++;
 			   }
 			   if (address) {
-				   ps.setString(col, "%" + publisher.getAddress() + "%");
+				   ps.setString(col, publisher.getAddress() + "%");
 				   col++;
 			   }
 			   ResultSet set = ps.executeQuery(); 
