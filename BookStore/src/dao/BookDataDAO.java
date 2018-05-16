@@ -62,11 +62,8 @@ public class BookDataDAO {
 			if (sort_attr != null && sort_attr.contains("Publisher.name")) {
 				sb2.append("(");
 			}
-			if (sauthor) {
-				sb2.append("(Book natural join AuthoredBy natural join Author) ");
-			} else {
-				sb2.append(" Book ");
-			}
+
+			sb2.append(" Book ");
 			if (sort_attr != null && sort_attr.contains("Category.name")) {
 				sb2.append(" inner join Category on Category.cid = Book.cid)");
 			}

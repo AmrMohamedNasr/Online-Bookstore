@@ -60,6 +60,8 @@ function add_book() {
                $('#aprice').val("");
                $('#acopies').val("");
                $('#athreshold').val("");
+               $('#apubdate').val("");
+               $('#aauthor').val("");
     	   } else {
     		   $("#addBookResult").text(data.message);
                $("#addBookResult").css('color', 'red');
